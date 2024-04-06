@@ -2,7 +2,10 @@
 
 ## Grupo
 ### Integrantes
-* legajo - Apellido(s), Nombre(s)
+* 51418 - San Pedro, Lucas
+* 50939 - Seffino, Mateo
+* 51190 - Giménez, Joaquín
+* 50449 - Galactico, Comeculo
 
 ### Repositorios
 * [frontend app](http://hyperlinkToGihubOrGitlab)
@@ -11,11 +14,12 @@
 
 ## Tema
 ### Descripción
-*2 a 6 líneas describiendo el negocio (menos es más)*
+Sistema para la publicación y divulgacion de eventos creados por distintos perfiles organizadores. Los organizadores se registraran en la aplicación y contaran con funciones para crear distintos eventos, en ubicaciones anteriormente cargadas y pertenecientes a distintas categorias tambien cargadas.
+Los perfiles de usuario serán avisado de los eventos mediante la pagina principal o seran notificados de eventos creados por organizadores que sigan. Los mismos pueden acceder al evento con la compra de una entrada y tendran acceso al mismo.
 
 ### Modelo
 ![imagen del modelo]()
-
+https://drive.google.com/file/d/16xYhbJUnDa4sdpdbVt6X3xEIybnITIP2/view?usp=sharing
 *Nota*: incluir un link con la imagen de un modelo, puede ser modelo de dominio, diagrama de clases, DER. Si lo prefieren pueden utilizar diagramas con [Mermaid](https://mermaid.js.org) en lugar de imágenes.
 
 ## Alcance Funcional 
@@ -27,8 +31,8 @@
 Regularidad:
 |Req|Detalle|
 |:-|:-|
-|CRUD simple|1. CRUD Tipo Habitacion<br>2. CRUD Servicio<br>3. CRUD Localidad|
-|CRUD dependiente|1. CRUD Habitación {depende de} CRUD Tipo Habitacion<br>2. CRUD Cliente {depende de} CRUD Localidad|
+|CRUD simple|1. CRUD Categoría<br>2. CRUD Cuenta<br>3. CRUD País|
+|CRUD dependiente|1. CRUD Evento {depende de} CRUD Categoría,CRUD Organizador y CRUD Ubicación<br>2. CRUD Ubicación {depende de} CRUD Localidad|
 |Listado<br>+<br>detalle| 1. Listado de habitaciones filtrado por tipo de habitación, muestra nro y tipo de habitación => detalle CRUD Habitacion<br> 2. Listado de reservas filtrado por rango de fecha, muestra nro de habitación, fecha inicio y fin estadía, estado y nombre del cliente => detalle muestra datos completos de la reserva y del cliente|
 |CUU/Epic|1. Reservar una habitación para la estadía<br>2. Realizar el check-in de una reserva|
 
