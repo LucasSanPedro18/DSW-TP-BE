@@ -5,7 +5,7 @@
 * 51418 - San Pedro, Lucas
 * 50939 - Seffino, Mateo
 * 51190 - Giménez, Joaquín
-* 50449 - Galactico, Comeculo
+* 50449 - Orsi, Dante
 
 ### Repositorios
 * [frontend app](http://hyperlinkToGihubOrGitlab)
