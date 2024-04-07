@@ -11,8 +11,8 @@
 
 ## Tema
 ### Descripción
-Sistema para la publicación y divulgacion de eventos creados por distintos perfiles organizadores. Los organizadores se registraran en la aplicación y contaran con funciones para crear distintos eventos, en ubicaciones anteriormente cargadas y pertenecientes a distintas categorias tambien cargadas.<br>
-Los perfiles de usuario serán avisado de los eventos mediante la pagina principal o seran notificados de eventos creados por organizadores que sigan. Los mismos pueden acceder al evento con la compra de una entrada.
+Sistema para la publicación y divulgación de eventos creados por distintos perfiles organizadores. Los organizadores se registran en la aplicación y cuentan con funciones para crear distintos eventos, en ubicaciones anteriormente cargadas y pertenecientes a distintas categorias.<br>
+Los perfiles de usuario son avisados de los eventos mediante la página principal o son notificados de eventos creados por organizadores que sigan. Los mismos pueden acceder al evento con la compra de una entrada.
 
 ### Modelo
 * [Modelo de dominio](https://drive.google.com/file/d/16xYhbJUnDa4sdpdbVt6X3xEIybnITIP2/view?usp=sharing)
@@ -46,4 +46,3 @@ Adicionales para Aprobación
 |Listados |1. Eventos a los que asisten amigos del usuario muestra nombre de amigo, foto de perfil de amigo, nombre de evento, fecha de evento, foto de evento y ubicación de evento => detalle CRUD Evento<br> 2. Listado de usuario filtrado por nombre de usuario muestra nombre de usuario, foto de perfil => detalle CRUD Usuario|
 |CUU/Epic|1. Crear Categoría<br>2. Cancelación de entrada<br>3. Crear ubicación<br>4. Hacer valoración<br>5. Asistir a evento<br>6. Editar perfil<br>7. Agregar amigo<br>8. Interactuar en un grupo de evento<br>9. Comunicarse via mensaje directo con otra Cuenta|
 |Otros|1. Envío de recordatorio de eventos<br>2. Envio de eventos que puedan interesar al usuario|
-
