@@ -15,10 +15,10 @@
 ## Tema
 ### Descripción
 Sistema para la publicación y divulgacion de eventos creados por distintos perfiles organizadores. Los organizadores se registraran en la aplicación y contaran con funciones para crear distintos eventos, en ubicaciones anteriormente cargadas y pertenecientes a distintas categorias tambien cargadas.
-Los perfiles de usuario serán avisado de los eventos mediante la pagina principal o seran notificados de eventos creados por organizadores que sigan. Los mismos pueden acceder al evento con la compra de una entrada y tendran acceso al mismo.
+Los perfiles de usuario serán avisado de los eventos mediante la pagina principal o seran notificados de eventos creados por organizadores que sigan. Los mismos pueden acceder al evento con la compra de una entrada.
 
 ### Modelo
-https://drive.google.com/file/d/16xYhbJUnDa4sdpdbVt6X3xEIybnITIP2/view?usp=sharing
+* [Modelo de dominio](https://drive.google.com/file/d/16xYhbJUnDa4sdpdbVt6X3xEIybnITIP2/view?usp=sharing)
 
 ## Alcance Funcional 
 
