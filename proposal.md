@@ -47,6 +47,6 @@ Adicionales para Aprobación
 |Req|Detalle|
 |:-|:-|
 |Listados |1. Eventos a los que asisten amigos del usuario muestra nombre de amigo, foto de perfil de amigo, nombre de evento, fecha de evento, foto de evento y ubicación de evento => detalle CRUD Evento<br> 2. Listado de usuario filtrado por nombre de usuario muestra nombre de usuario, foto de perfil => detalle CRUD Usuario|
-|CUU/Epic|1. Crear Categoría<br>2. Cancelación de entrada<br>3. Crear ubicación<br>4. Hacer valoración<br>5. Asistir a evento<br>6. Editar perfil<br>7. Agregar amigo<br>8. Interactuar en un grupo de evento<br>9. Comunicarse via mensaje directo|
+|CUU/Epic|1. Crear Categoría<br>2. Cancelación de entrada<br>3. Crear ubicación<br>4. Hacer valoración<br>5. Asistir a evento<br>6. Editar perfil<br>7. Agregar amigo<br>8. Interactuar en un grupo de evento<br>9. Comunicarse via mensaje directo con otra Cuenta|
 |Otros|1. Envío de recordatorio de eventos<br>2. Envio de eventos que puedan interesar al usuario|
 
