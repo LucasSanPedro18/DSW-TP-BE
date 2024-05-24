@@ -15,7 +15,7 @@ const app = express();
 //
 // character -> /api/characters/
 const unEvento = [
-    new evento(123123, 'Techno', 3000, 'EVENTO GAY ADMIN: MATEO SEFFINO', 123, 'no se cuando meirda es', 20),
+    new evento(123123, 'Techno', 3000, 'asdasd', 123, 'asdasd', 20),
 ];
 app.get('/api/eventos', (req, res) => {
     res.json(unEvento);

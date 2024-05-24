@@ -24,9 +24,9 @@ const unEvento = [
         123123,
         'Techno',
         3000,
-        'EVENTO GAY ADMIN: MATEO SEFFINO',
+        'asdasd',
         123,
-        'no se cuando meirda es',
+        'asdasd',
         20,
     ),
 ]

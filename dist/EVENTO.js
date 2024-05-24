@@ -1,5 +1,7 @@
 export class evento {
-    constructor(idEvento, nombre, cuposGral, descripcion, fotoEvento, fecha, hora) {
+    constructor(idEvento, nombre, cuposGral, descripcion, fotoEvento, //Tipo de dato??
+    fecha, //Tipo de dato??
+    hora) {
         this.idEvento = idEvento;
         this.nombre = nombre;
         this.cuposGral = cuposGral;
