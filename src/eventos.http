@@ -1,0 +1,22 @@
+### obtener todos los eventos
+
+GET http://localhost:3000/api/eventos 
+
+### obtener un evento
+
+GET http://localhost:3000/api/eventos/123123
+
+### crear un nuevo evento
+
+POST http://localhost:3000/api/eventos
+Content-Type: application/json
+
+{
+    "idEvento": 123,
+    "nombre":"evento pop",
+    "cuposGral":99999,
+    "descripcion":"dale q va",
+    "fotoEvento":0,
+    "fecha":"ayer",
+    "hora":1500
+}
