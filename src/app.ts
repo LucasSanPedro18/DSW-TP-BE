@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { evento } from './evento.js'
+import { evento } from './evento/evento.entity.js'
 import { categoria } from './categoria.js'
 import { cuenta } from './cuenta.js'
 import { entrada } from './entrada.js'
@@ -8,6 +8,7 @@ import { organizador } from './organizador.js'
 import { pais } from './pais.js'
 import { tipoentrada } from './tipoentrada.js'
 import { usuario } from './usuario.js'
+import { EventoRepository } from './evento/evento.repository.js'
 
 const app = express()
 
@@ -27,6 +28,8 @@ app.use(express.json())
 //put & patch /api/characters/:id -> modifica character con id = :id
 //
 // character -> /api/characters/
+
+const repository = new EventoRepository()
 
 
 const eventos = [
@@ -105,11 +108,11 @@ const usuarios = [
 ]
 
 app.get('/api/eventos',(req,res)=>{
-    return res.json(eventos)
+    return res.json({data:repository.findAll()})
 })
 
 app.get('/api/eventos/:id',(req,res)=>{
-    const nuevoEvento = eventos.find((evento)=>evento.idEvento===Number(req.params.id)) 
+    const nuevoEvento = repository.findOne({id:Number(req.params.id)}) 
     if (!nuevoEvento) {
         return res.status(404).send({message: 'evento no encontrado'})
     }
@@ -119,7 +122,7 @@ app.get('/api/eventos/:id',(req,res)=>{
 app.post('/api/eventos', sanitizeEventoInput, (req,res)=>{
     //req.body donde se encuentra la informacion del post
     const input = req.body.sanitizedInput
-    const nuevoEvento = new evento(
+    const nuevoEventoInput = new evento(
         input.idEvento,
         input.nombre, 
         input.cuposGral, 
@@ -128,18 +131,10 @@ app.post('/api/eventos', sanitizeEventoInput, (req,res)=>{
         input.fecha, 
         input.hora
     )
-    eventos.push(nuevoEvento)
+    const nuevoEvento = repository.add(nuevoEventoInput)
     return res.status(201).send({message: 'Evento creado', data: nuevoEvento})
 })
-
-app.put('/api/eventos/:id', sanitizeEventoInput, (req, res)=>{
-    const eventoIDx = eventos.findIndex((evento) => evento.idEvento === Number(req.params.id))
-    if(eventoIDx === -1){
-        return res.status(404).send({message: 'evento no encontrado'})
-    }
-    eventos[eventoIDx] = { ...eventos[eventoIDx], ...req.body.sanitizedInput}
-    return res.status(200).send({message:'Evento actualizado correctamente', data: eventos[eventoIDx]})
-})
+    
 
 function sanitizeEventoInput(req: Request, res: Response, next: NextFunction){
 
@@ -162,21 +157,36 @@ function sanitizeEventoInput(req: Request, res: Response, next: NextFunction){
     next();
 }
 
-app.patch('/api/eventos/:id', sanitizeEventoInput, (req, res)=>{
-    const eventoIDx = eventos.findIndex((evento) => evento.idEvento === Number(req.params.id))
-    if(eventoIDx === -1){
+app.put('/api/eventos/:id', sanitizeEventoInput, (req, res)=>{
+    req.body.sanitizedInput.id = req.params.id
+    const nuevoEvento = repository.update(req.body.sanitizedInput)
+    
+    if(!nuevoEvento){
         return res.status(404).send({message: 'evento no encontrado'})
-    } 
-    Object.assign (eventos[eventoIDx],req.body.sanitizedInput)
-    return res.status(200).send({message:'Evento actualizado correctamente', data: eventos[eventoIDx]})
+    }
+    return res.status(200).send({message:'Evento actualizado correctamente', data: nuevoEvento})
 })
+    
+
+app.patch('/api/eventos/:id', sanitizeEventoInput, (req, res)=>{
+    req.body.sanitizedInput.id = req.params.id
+    const nuevoEvento = repository.update(req.body.sanitizedInput)
+    if(!nuevoEvento) {
+        return res.status(404).send({message: 'evento no encontrado'})
+    }
+    return res.status(200).send({message:'Evento actualizado correctamente', data: nuevoEvento})
+})
+    
+    
+
 
 app.delete('/api/eventos/:id', (req, res) => {
-    const eventoIDx = eventos.findIndex((evento) => evento.idEvento === Number(req.params.id))
-    if(eventoIDx === -1) {
+    const id=Number(req.params.id)
+    const nuevoEvento = repository.delete({id})
+
+    if(!nuevoEvento) {
         res.status(404).send({message:'Evento no encontrado'})
     }else {
-        eventos.splice(eventoIDx, 1)
         res.status(200).send({message: 'Evento borrado satisfactoriamente'})
     }
 })
