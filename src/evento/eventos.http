@@ -4,7 +4,7 @@ GET http://localhost:3000/api/eventos
 
 ### obtener un evento
 
-GET http://localhost:3000/api/eventos/123
+GET http://localhost:3000/api/eventos/123123
 
 ### crear un nuevo evento
 
@@ -26,7 +26,6 @@ PUT http://localhost:3000/api/eventos/123
 Content-Type: application/json
 
 {
-    "idEvento":123,
     "nombre":"evento rock",
     "cuposGral":10,
     "descripcion":"prueba 2",
@@ -34,6 +33,8 @@ Content-Type: application/json
     "fecha":"ayer",
     "hora":1500
 }
+//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
+
 
 ### modificar un evento (PATCH - recurso parcial)
 PATCH http://localhost:3000/api/eventos/123
@@ -43,7 +44,9 @@ Content-Type: application/json
     "cuposGral": 100,
     "descripcion": "prueba 3"
 }
+//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
+
 
 ### Borrar un evento
-DELETE http://localhost:3000/api/eventos/123
+DELETE http://localhost:3000/api/eventos/123123
 
