@@ -8,7 +8,7 @@
 * 50449 - Orsi, Dante
 
 ### Repositorios
-* (https://github.com/DanteOrsi/DSW-TP-FE).
+* [FRONTEND](https://github.com/DanteOrsi/DSW-TP-FE).
 ## Tema
 ### Descripción
 Sistema para la publicación y divulgación de eventos creados por distintos perfiles organizadores. Los organizadores se registran en la aplicación y cuentan con funciones para crear distintos eventos, en ubicaciones anteriormente cargadas y pertenecientes a distintas categorias.<br>
