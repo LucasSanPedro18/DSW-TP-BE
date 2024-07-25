@@ -3,7 +3,7 @@ import { usuarioRepository } from "./usuario.repository.js";
 import { usuario } from "./usuario.entity.js";
 
 const repository = new usuarioRepository()
-
+// a ver q onda
 function sanitizedUsuarioInput(req: Request, res: Response, next: NextFunction){
 
     req.body.sanitizedInput = { 
