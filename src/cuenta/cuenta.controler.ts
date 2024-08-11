@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { CuentaRepository } from "./evento.repository.js";
-import { cuenta } from "./evento.entity.js";
+import { CuentaRepository } from "./cuenta.repository.js";
+import { cuenta } from "./cuenta.entity.js";
 
 const repository = new CuentaRepository()
 
@@ -28,53 +28,52 @@ function findAll(req: Request,res: Response) {
 }
 
 function findOne(req: Request,res: Response) {
-    const nuevoCuenta = repository.findOne({id:Number(req.params.id)}) 
-    if (!nuevoCuenta) {
-        return res.status(404).send({message: 'evento no encontrado'})
+    const nuevaCuenta = repository.findOne({id:Number(req.params.id)}) 
+    if (!nuevaCuenta) {
+        return res.status(404).send({message: 'Cuenta no encontrada'})
     }
-    return res.json(nuevoEvento)
+    return res.json(nuevaCuenta)
 }
 
 
 function add(req: Request,res: Response) {
     //req.body donde se encuentra la informacion del post
     const input = req.body.sanitizedInput
-    const nuevoEventoInput = new evento(
-        input.idEvento,
-        input.nombre, 
-        input.cuposGral, 
-        input.descripcion, 
-        input.fotoEvento, 
-        input.fecha, 
-        input.hora
+    const nuevaCuentaInput = new cuenta(
+        input.idCuenta,
+        input.mail, 
+        input.nombreU, 
+        input.contraseña,
+        input.descripcion,  
+        input.fotoPerfil,
     )
-    const nuevoEvento = repository.add(nuevoEventoInput)
-    return res.status(201).send({message: 'Evento creado', data: nuevoEvento})
+    const nuevaCuenta = repository.add(nuevaCuentaInput)
+    return res.status(201).send({message: 'Cuenta creada', data: nuevaCuenta})
 }
     
 
 function update(req: Request, res: Response){
     req.body.sanitizedInput.id = req.params.id
-    const nuevoEvento = repository.update(req.body.sanitizedInput)
+    const nuevaCuenta = repository.update(req.body.sanitizedInput)
     
-    if(!nuevoEvento){
-        return res.status(404).send({message: 'evento no encontrado'})
+    if(!nuevaCuenta){
+        return res.status(404).send({message: 'Cuenta no encontrada'})
     }
-    return res.status(200).send({message:'Evento actualizado correctamente', data: nuevoEvento})
+    return res.status(200).send({message:'Cuenta actualizada correctamente', data: nuevaCuenta})
 }
 //NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
 
 
 function remove(req: Request,res: Response) {
     const id=Number(req.params.id)
-    const nuevoEvento = repository.delete({id})
+    const nuevaCuenta = repository.delete({id})
 
-    if(!nuevoEvento) {
-        res.status(404).send({message:'Evento no encontrado'})
+    if(!nuevaCuenta) {
+        res.status(404).send({message:'Cuenta no encontrada'})
     }else {
-        res.status(200).send({message: 'Evento borrado satisfactoriamente'})
+        res.status(200).send({message: 'Cuenta borrada satisfactoriamente'})
     }
 }
 
 
-export {sanitizedEventoInput, findAll, findOne, add, update, remove}
+export {sanitizedCuentaInput, findAll, findOne, add, update, remove}

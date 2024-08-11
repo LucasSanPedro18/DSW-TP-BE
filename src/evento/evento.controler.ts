@@ -32,7 +32,7 @@ function findAll(req: Request,res: Response) {
 function findOne(req: Request,res: Response) {
     const nuevoEvento = repository.findOne({id:Number(req.params.id)}) 
     if (!nuevoEvento) {
-        return res.status(404).send({message: 'evento no encontrado'})
+        return res.status(404).send({message: 'Evento no encontrado'})
     }
     return res.json(nuevoEvento)
 }
@@ -60,7 +60,7 @@ function update(req: Request, res: Response){
     const nuevoEvento = repository.update(req.body.sanitizedInput)
     
     if(!nuevoEvento){
-        return res.status(404).send({message: 'evento no encontrado'})
+        return res.status(404).send({message: 'Evento no encontrado'})
     }
     return res.status(200).send({message:'Evento actualizado correctamente', data: nuevoEvento})
 }

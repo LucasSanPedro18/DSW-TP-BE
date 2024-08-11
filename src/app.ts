@@ -1,10 +1,12 @@
 import express from 'express'
 import { eventoRouter } from './evento/evento.routes.js'
+import { cuentaRouter } from './cuenta/cuenta.routes.js'
 
 const app = express()
 app.use(express.json())
 
 app.use('/api/eventos', eventoRouter)
+app.use('/api/cuentas', cuentaRouter)
 
 app.use((req, res) => {
     return res.status(404).send({message:'Recurso no encontrado'})
