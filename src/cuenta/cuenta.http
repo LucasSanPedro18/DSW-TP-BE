@@ -17,7 +17,7 @@ Content-Type: application/json
     "nombreU":"cuenta pop",
     "contraseña":"1234",
     "descripcion":"prueba 1",
-    "fotoPerfil":0,
+    "fotoPerfil":0
 }
 
 ### modificar una cuenta (PUT - recurso completo e inempotente)
@@ -29,7 +29,7 @@ Content-Type: application/json
     "nombreU":"cuenta modi",
     "contraseña":"user",
     "descripcion":"prueba 2",
-    "fotoPerfil":0,
+    "fotoPerfil":0
 }
 //NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
 
