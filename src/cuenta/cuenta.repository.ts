@@ -18,7 +18,7 @@ export class CuentaRepository implements Repository<cuenta>{
     }
 
     public findOne(item: { id: number; }): cuenta | undefined {
-        return cuentas.find((cuenta)=>cuenta.idCuenta === item.id)
+        return cuentas.find((cuenta)=>cuenta.id === item.id)
     }
 
     public add(item: cuenta): cuenta | undefined {
@@ -27,7 +27,7 @@ export class CuentaRepository implements Repository<cuenta>{
     }
 
     public update(item: cuenta): cuenta | undefined {
-        const cuentaIDx = cuentas.findIndex((cuenta) => cuenta.idCuenta === item.idCuenta)
+        const cuentaIDx = cuentas.findIndex((cuenta) => cuenta.id === item.id)
         if(cuentaIDx !== -1){
             cuentas[cuentaIDx] = { ...cuentas[cuentaIDx], ...item }
         }
@@ -35,7 +35,7 @@ export class CuentaRepository implements Repository<cuenta>{
     }
 
     public delete(item: { id: number; }): cuenta | undefined {
-              const cuentaIDx = cuentas.findIndex((cuenta) => cuenta.idCuenta === item.id)
+              const cuentaIDx = cuentas.findIndex((cuenta) => cuenta.id === item.id)
     if(cuentaIDx !== -1) {
         const deletedCuentas = cuentas[cuentaIDx]
         cuentas.splice(cuentaIDx, 1)

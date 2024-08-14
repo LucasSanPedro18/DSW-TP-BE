@@ -1,10 +1,10 @@
 export class cuenta{
     constructor(
-        public idCuenta:number,
+        public id:number,
         public mail:string,
-        public nombreU:string,
+        public nombre:string,
         public contraseña:string,
         public descripcion:string,
-        public fotoPerfil:number, //Tipo de dato??
+        public foto:number, //Tipo de dato??
     ) {}
 }

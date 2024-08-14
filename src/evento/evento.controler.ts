@@ -30,7 +30,7 @@ function findAll(req: Request,res: Response) {
 }
 
 function findOne(req: Request,res: Response) {
-    const nuevoEvento = repository.findOne({id:Number(req.params.id)}) 
+    const nuevoEvento = repository.findOne({id:Number(req.params.idEvento)}) 
     if (!nuevoEvento) {
         return res.status(404).send({message: 'Evento no encontrado'})
     }
@@ -56,24 +56,27 @@ function add(req: Request,res: Response) {
     
 
 function update(req: Request, res: Response){
-    req.body.sanitizedInput.id = req.params.id
-    const nuevoEvento = repository.update(req.body.sanitizedInput)
+    req.body.sanitizedInput.idEvento = req.params.idEvento
+    const id=Number(req.params.idEvento)
+    let nuevoEvento = repository.findOne({id:Number(req.params.idEvento)})
     
     if(!nuevoEvento){
         return res.status(404).send({message: 'Evento no encontrado'})
     }
+    nuevoEvento = repository.update(req.body.sanitizedInput)
     return res.status(200).send({message:'Evento actualizado correctamente', data: nuevoEvento})
 }
 //NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
 
 
 function remove(req: Request,res: Response) {
-    const id=Number(req.params.id)
-    const nuevoEvento = repository.delete({id})
+    const id=Number(req.params.idEvento)
+    const nuevoEvento = repository.findOne({id:Number(req.params.idEvento)}) 
 
     if(!nuevoEvento) {
         res.status(404).send({message:'Evento no encontrado'})
     }else {
+        const nuevoEvento = repository.delete({id})
         res.status(200).send({message: 'Evento borrado satisfactoriamente'})
     }
 }

@@ -4,8 +4,8 @@ import { sanitizedEventoInput, findAll, findOne, add, update, remove } from "./e
 export const eventoRouter = Router()
 
 eventoRouter.get('/', findAll)
-eventoRouter.get('/:id', findOne)
+eventoRouter.get('/:idEvento', findOne)
 eventoRouter.post('/', sanitizedEventoInput, add)
-eventoRouter.put('/:id', sanitizedEventoInput, update)
-eventoRouter.patch('/:id', sanitizedEventoInput, update)
-eventoRouter.delete('/:id', remove)
+eventoRouter.put('/:idEvento', sanitizedEventoInput, update)
+eventoRouter.patch('/:idEvento', sanitizedEventoInput, update)
+eventoRouter.delete('/:idEvento', remove)

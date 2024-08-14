@@ -7,11 +7,12 @@ const repository = new CuentaRepository()
 function sanitizedCuentaInput(req: Request, res: Response, next: NextFunction){
 
     req.body.sanitizedInput = { 
+        id : req.body.id,
         mail : req.body.mail,
         nombre : req.body.nombre,
         contraseña : req.body.contraseña,
         descripcion : req.body.descripcion,
-        fotoPerfil : req.body.fotoPerfil,
+        foto : req.body.foto,
     };
     //validar tipo de datos, etc etc etc etc etc etc etc
 
@@ -40,12 +41,12 @@ function add(req: Request,res: Response) {
     //req.body donde se encuentra la informacion del post
     const input = req.body.sanitizedInput
     const nuevaCuentaInput = new cuenta(
-        input.idCuenta,
+        input.id,
         input.mail, 
-        input.nombreU, 
+        input.nombre, 
         input.contraseña,
         input.descripcion,  
-        input.fotoPerfil,
+        input.foto
     )
     const nuevaCuenta = repository.add(nuevaCuentaInput)
     return res.status(201).send({message: 'Cuenta creada', data: nuevaCuenta})
@@ -54,11 +55,12 @@ function add(req: Request,res: Response) {
 
 function update(req: Request, res: Response){
     req.body.sanitizedInput.id = req.params.id
-    const nuevaCuenta = repository.update(req.body.sanitizedInput)
+    const busca = repository.findOne({id:Number(req.params.id)})
     
-    if(!nuevaCuenta){
+    if(!busca){
         return res.status(404).send({message: 'Cuenta no encontrada'})
     }
+    const nuevaCuenta = repository.update(req.body.sanitizedInput)
     return res.status(200).send({message:'Cuenta actualizada correctamente', data: nuevaCuenta})
 }
 //NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
@@ -66,11 +68,12 @@ function update(req: Request, res: Response){
 
 function remove(req: Request,res: Response) {
     const id=Number(req.params.id)
-    const nuevaCuenta = repository.delete({id})
+    const nuevaCuenta = repository.findOne({id:Number(req.params.id)})
 
     if(!nuevaCuenta) {
         res.status(404).send({message:'Cuenta no encontrada'})
     }else {
+        const nuevaCuenta = repository.delete({id})
         res.status(200).send({message: 'Cuenta borrada satisfactoriamente'})
     }
 }
