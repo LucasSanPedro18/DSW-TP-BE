@@ -3,8 +3,8 @@ create database if not exists GEEV;
 use GEEV;
 
 ## uncomment if you are not using docker
-## create user if not exists dsw@'%' identified by 'dsw';
-## grant select, update, insert, delete on GEEV.* to dsw@'%';
+ create user if not exists dsw@'%' identified by 'dsw';
+ grant select, update, insert, delete on GEEV.* to dsw@'%';
 
 
 create table if not exists `GEEV`.`eventos` (
@@ -12,9 +12,9 @@ create table if not exists `GEEV`.`eventos` (
   `nombre` VARCHAR(255) NULL,
   `cuposGral` INT UNSIGNED NULL,
   `descripcion` VARCHAR(255) NULL,
-  `fotoEvento` IMAGE UNSIGNED NULL,
-  `fecha` DATE UNSIGNED NULL,
-  `hora` INT UNSIGNED NULL,
+  `fotoEvento` BOOL NULL,
+  `fecha` DATE NULL,
+  `hora` INT  NULL,
   PRIMARY KEY (`id`));
 
 create table if not exists `GEEV`.`eventoCategoria` (
