@@ -5,26 +5,7 @@ import { userInfo } from 'os'
 import { PassThrough } from 'stream'
 import { error } from 'console'
 
-
-var mysql = require('mysql')
-var conexion = mysql.createConnection({
-    host: 'localhost',
-    database: 'GEEV',
-    user: 'root',
-    password: 'root',    
-});
-
-conexion.connect(function(error: Error){
-    if(error){
-        throw error;
-    }else {
-        console.log('Conexion correcta');
-    }
-
-});
-conexion.end();
-
-
+    
 const app = express()
 app.use(express.json())
 
