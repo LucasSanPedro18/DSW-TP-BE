@@ -1,5 +1,6 @@
 import { Repository } from "../shared/repository.js";
 import { cuenta } from "./cuenta.entity.js";
+import { pool } from "../shared/db/conn.mysql.js";
 
 const cuentas = [
     new cuenta (
@@ -12,10 +13,11 @@ const cuentas = [
     ),
 ]
 
-export class CuentaRepository implements Repository<cuenta>{
-    public findAll(): cuenta[] | undefined{
-        return cuentas
-    }
+export class CuentaRepository implements Repository<cuenta> {
+public async findAll(): Promise<cuenta[] | undefined> {
+    const [cuentas] = await pool.query('select * from cuentas');
+    return cuentas as cuenta[];
+}
 
     public findOne(item: { id: number; }): cuenta | undefined {
         return cuentas.find((cuenta)=>cuenta.id === item.id)

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { usuarioRepository } from "./usuario.repository.js";
+import { UsuarioRepository } from "./usuario.repository.js";
 import { usuario } from "./usuario.entity.js";
 
-const repository = new usuarioRepository()
+const repository = new UsuarioRepository()
 
 function sanitizedUsuarioInput(req: Request, res: Response, next: NextFunction){
 

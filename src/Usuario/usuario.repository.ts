@@ -1,5 +1,6 @@
 import { Repository } from "../shared/repository.js";
 import { usuario } from "./usuario.entity.js";
+import { pool } from "../shared/db/conn.mysql.js";
 
 const usuarios = [
     new usuario (
@@ -9,9 +10,10 @@ const usuarios = [
     )
 ]
 
-export class usuarioRepository implements Repository<usuario>{
-    public findAll(): usuario[] | undefined{
-        return usuarios
+export class UsuarioRepository implements Repository<usuario> {
+public async findAll(): Promise<usuario[] | undefined> {
+    const [eventos] = await pool.query('select * from usuarios')
+        return usuarios as usuario[]
     }
 
     public findOne(item: { id: number; }): usuario | undefined {

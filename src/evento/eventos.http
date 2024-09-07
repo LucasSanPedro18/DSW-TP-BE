@@ -6,7 +6,7 @@ GET http://localhost:3000/api/eventos
 
 GET http://localhost:3000/api/eventos/123
 
-### crear un nuevo evento
+### crear un nuevo evento asdasdasdasdads
 
 POST http://localhost:3000/api/eventos
 Content-Type: application/json
