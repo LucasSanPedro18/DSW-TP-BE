@@ -1,11 +1,7 @@
 import express from 'express'
 import { eventoRouter } from './evento/evento.routes.js'
 import { cuentaRouter } from './cuenta/cuenta.routes.js'
-import { userInfo } from 'os'
-import { PassThrough } from 'stream'
-import { error } from 'console'
 
-    
 const app = express()
 app.use(express.json())
 

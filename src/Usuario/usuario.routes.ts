@@ -1,11 +1,11 @@
-import { Router } from "express";
-import { sanitizedUsuarioInput, findAll, findOne, add, update, remove } from "./usuario.controler.js";
+import { Router } from 'express'
+import { sanitizedusuarioInput, findAll, findOne, add, update, remove } from './usuario.controler.js'
 
 export const usuarioRouter = Router()
 
 usuarioRouter.get('/', findAll)
-usuarioRouter.get('/:idEvento', findOne)
-usuarioRouter.post('/', sanitizedUsuarioInput, add)
-usuarioRouter.put('/:idEvento', sanitizedUsuarioInput, update)
-usuarioRouter.patch('/:idEvento', sanitizedUsuarioInput, update)
-usuarioRouter.delete('/:idEvento', remove)
+usuarioRouter.get('/:id', findOne)
+usuarioRouter.post('/', sanitizedusuarioInput, add)
+usuarioRouter.put('/:id', sanitizedusuarioInput, update)
+usuarioRouter.patch('/:id', sanitizedusuarioInput, update)
+usuarioRouter.delete('/:id', remove)

@@ -1,85 +1,79 @@
-import { Request, Response, NextFunction } from "express";
-import { EventoRepository } from "./evento.repository.js";
-import { evento } from "./evento.entity.js";
+import { Request, Response, NextFunction } from 'express'
+import { evento } from './evento.entity.js'
+import { eventoRepository } from './evento.repository.js'
 
-const repository = new EventoRepository()
 
-function sanitizedEventoInput(req: Request, res: Response, next: NextFunction){
+const repository = new eventoRepository()
 
-    req.body.sanitizedInput = { 
-        idEvento : req.body.idEvento,
-        nombre : req.body.nombre,
-        cuposGral : req.body.cuposGral,
-        descripcion : req.body.descripcion,
-        fotoEvento : req.body.fotoEvento,
-        fecha : req.body.fecha,
-        hora : req.body.hora,
-    };
-    //validar tipo de datos, etc etc etc etc etc etc etc
+function sanitizedEventoInput(req: Request, res: Response, next: NextFunction) {
+  req.body.sanitizedInput = {
+    nombre: req.body.nombre,
+    cuposGral: req.body.cuposGral,
+    descripcion: req.body.descripcion,
+    fotoEvento: req.body.fotoEvento,
+    fecha: req.body.fecha,
+    hora: req.body.hora,
+    idEvento : req.body.idEvento,
+  }
+  //more checks here
 
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-        if (req.body.sanitizedInput[key] === undefined) {
-            delete req.body.sanitizedInput[key];
-        }
-    });
-    next();
-}
-
-function findAll(req: Request,res: Response) {
-    return res.json({data:repository.findAll()})
-}
-
-function findOne(req: Request,res: Response) {
-    const nuevoEvento = repository.findOne({id:Number(req.params.idEvento)}) 
-    if (!nuevoEvento) {
-        return res.status(404).send({message: 'Evento no encontrado'})
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      delete req.body.sanitizedInput[key]
     }
-    return res.json(nuevoEvento)
+  })
+  next()
 }
 
-
-function add(req: Request,res: Response) {
-    //req.body donde se encuentra la informacion del post
-    const input = req.body.sanitizedInput
-    const nuevoEventoInput = new evento(
-        input.idEvento,
-        input.nombre, 
-        input.cuposGral, 
-        input.descripcion, 
-        input.fotoEvento, 
-        input.fecha, 
-        input.hora
-    )
-    const nuevoEvento = repository.add(nuevoEventoInput)
-    return res.status(201).send({message: 'Evento creado', data: nuevoEvento})
-}
-    
-
-function update(req: Request, res: Response){
-    req.body.sanitizedInput.idEvento = req.params.idEvento
-    const id=Number(req.params.idEvento)
-    let nuevoEvento = repository.findOne({id:Number(req.params.idEvento)})
-    
-    if(!nuevoEvento){
-        return res.status(404).send({message: 'Evento no encontrado'})
-    }
-    nuevoEvento = repository.update(req.body.sanitizedInput)
-    return res.status(200).send({message:'Evento actualizado correctamente', data: nuevoEvento})
-}
-//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
-
-
-function remove(req: Request,res: Response) {
-    const id=Number(req.params.idEvento)
-    const nuevoEvento = repository.findOne({id:Number(req.params.idEvento)}) 
-
-    if(!nuevoEvento) {
-        res.status(404).send({message:'Evento no encontrado'})
-    }else {
-        const nuevoEvento = repository.delete({id})
-        res.status(200).send({message: 'Evento borrado satisfactoriamente'})
-    }
+async function findAll(req: Request, res: Response) {
+  res.json({ data: await repository.findAll() })
 }
 
+async function findOne(req: Request, res: Response) {
+  const id = req.params.id
+  const evento = await repository.findOne({ id })
+  if (!evento) {
+    return res.status(404).send({ message: 'evento not found' })
+  }
+  res.json({ data: evento })
+}
 
-export {sanitizedEventoInput, findAll, findOne, add, update, remove}
+async function add(req: Request, res: Response) {
+  const input = req.body.sanitizedInput
+
+  const eventoInput = new evento(
+    input.nombre,
+    input.cuposGral,
+    input.descripcion,
+    input.fotoEvento,
+    input.fecha,
+    input.hora,
+    input.idEvento
+  )
+
+  const nuevoevento = await repository.add(eventoInput)
+  return res.status(201).send({ message: 'evento created', data: evento })
+}
+
+async function update(req: Request, res: Response) {
+  const evento = await repository.update(req.params.id, req.body.sanitizedInput)
+
+  if (!evento) {
+    return res.status(404).send({ message: 'evento not found' })
+  }
+
+  return res.status(200).send({ message: 'evento updated successfully', data: evento })
+}
+
+async function remove(req: Request, res: Response) {
+  const id = req.params.id
+  const evento = await repository.delete({ id })
+
+  if (!evento) {
+    res.status(404).send({ message: 'evento not found' })
+  } else {
+    res.status(200).send({ message: 'evento deleted successfully' })
+  }
+}
+
+export { sanitizedEventoInput, findAll, findOne, add, update, remove }

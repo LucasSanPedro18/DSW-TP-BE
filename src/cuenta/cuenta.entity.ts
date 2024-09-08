@@ -1,6 +1,6 @@
 export class cuenta{
     constructor(
-        public id:number,
+        public idCuenta:number,
         public mail:string,
         public nombre:string,
         public contraseña:string,
