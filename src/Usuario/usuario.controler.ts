@@ -1,74 +1,75 @@
-import { Request, Response, NextFunction } from "express";
-import { UsuarioRepository } from "./usuario.repository.js";
-import { usuario } from "./usuario.entity.js";
+import { Request, Response, NextFunction } from 'express'
+import { usuario } from './usuario.entity.js'
+import { usuarioRepository } from './usuario.repository.js'
 
-const repository = new UsuarioRepository()
 
-function sanitizedUsuarioInput(req: Request, res: Response, next: NextFunction){
+const repository = new usuarioRepository()
 
-    req.body.sanitizedInput = { 
-        DNI : req.body.dni,
-        fotoDni1 : req.body.fotoDni1,
-        fotoDni2 : req.body.fotoDni2,
-    };
-    //validar tipo de datos, etc etc etc etc etc etc etc
+function sanitizedusuarioInput(req: Request, res: Response, next: NextFunction) {
+  req.body.sanitizedInput = {
+    nombre: req.body.nombre,
+    cuposGral: req.body.cuposGral,
+    descripcion: req.body.descripcion,
+    fotousuario: req.body.fotousuario,
+    fecha: req.body.fecha,
+    hora: req.body.hora,
+    idusuario : req.body.idusuario,
+  }
+  //more checks here
 
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-        if (req.body.sanitizedInput[key] === undefined) {
-            delete req.body.sanitizedInput[key];
-        }
-    });
-    next();
-}
-
-function findAll(req: Request,res: Response) {
-    return res.json({data:repository.findAll()})
-}
-
-function findOne(req: Request,res: Response) {
-    const nuevoUsuario = repository.findOne({id:Number(req.params.DNI)}) 
-    if (!nuevoUsuario) {
-        return res.status(404).send({message: 'usuario no encontrado'})
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      delete req.body.sanitizedInput[key]
     }
-    return res.json(nuevoUsuario)
+  })
+  next()
 }
 
-
-function add(req: Request,res: Response) {
-    //req.body donde se encuentra la informacion del post
-    const input = req.body.sanitizedInput
-    const nuevoUsuarioInput = new usuario(
-        input.dni,
-        input.fotoDni1, 
-        input.fotoDni2,
-    )
-    const nuevoUsuario = repository.add(nuevoUsuarioInput)
-    return res.status(201).send({message: 'Usuario creado', data: nuevoUsuario})
-}
-    
-
-function update(req: Request, res: Response){
-    req.body.sanitizedInput.id = req.params.id
-    const nuevoUsuario = repository.update(req.body.sanitizedInput)
-    
-    if(!nuevoUsuario){
-        return res.status(404).send({message: 'usuario no encontrado'})
-    }
-    return res.status(200).send({message:'usuario actualizado correctamente', data: nuevoUsuario})
-}
-//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
-
-
-function remove(req: Request,res: Response) {
-    const id = Number(req.params.dni)
-    const nuevoUsuario = repository.delete({id})
-
-    if(!nuevoUsuario) {
-        res.status(404).send({message:'Usuario no encontrado'})
-    }else {
-        res.status(200).send({message: 'Usuario borrado satisfactoriamente'})
-    }
+async function findAll(req: Request, res: Response) {
+  res.json({ data: await repository.findAll() })
 }
 
+async function findOne(req: Request, res: Response) {
+  const id = req.params.id
+  const usuario = await repository.findOne({ id })
+  if (!usuario) {
+    return res.status(404).send({ message: 'usuario not found' })
+  }
+  res.json({ data: usuario })
+}
 
-export {sanitizedUsuarioInput, findAll, findOne, add, update, remove}
+async function add(req: Request, res: Response) {
+  const input = req.body.sanitizedInput
+
+  const usuarioInput = new usuario(
+    input.DNI,
+    input.fotoDni1,
+    input.fotoDni2,
+  )
+
+  const nuevousuario = await repository.add(usuarioInput)
+  return res.status(201).send({ message: 'usuario created', data: usuario })
+}
+
+async function update(req: Request, res: Response) {
+  const usuario = await repository.update(req.params.id, req.body.sanitizedInput)
+
+  if (!usuario) {
+    return res.status(404).send({ message: 'usuario not found' })
+  }
+
+  return res.status(200).send({ message: 'usuario updated successfully', data: usuario })
+}
+
+async function remove(req: Request, res: Response) {
+  const id = req.params.id
+  const usuario = await repository.delete({ id })
+
+  if (!usuario) {
+    res.status(404).send({ message: 'usuario not found' })
+  } else {
+    res.status(200).send({ message: 'usuario deleted successfully' })
+  }
+}
+
+export { sanitizedusuarioInput, findAll, findOne, add, update, remove }

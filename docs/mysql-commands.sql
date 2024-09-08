@@ -27,5 +27,5 @@ create table if not exists `GEEV`.`eventoCategoria` (
     ON DELETE RESTRICT
     ON UPDATE CASCADE);
 
-insert into eventos.eventos values(1,'festichola',200,'que se yo',101,11,22);
+insert into GEEV.eventos values(1,'festichola',200,'que se yo',101,11,22);
 insert into eventos.eventoCategoria values(1,'Techno');

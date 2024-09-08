@@ -1,82 +1,76 @@
-import { Request, Response, NextFunction } from "express";
-import { CuentaRepository } from "./cuenta.repository.js";
-import { cuenta } from "./cuenta.entity.js";
+import { Request, Response, NextFunction } from 'express'
+import { cuentaRepository } from './cuenta.repository.js'
+import { cuenta } from './cuenta.entity.js'
 
-const repository = new CuentaRepository()
+const repository = new cuentaRepository()
 
-function sanitizedCuentaInput(req: Request, res: Response, next: NextFunction){
+function sanitizedcuentaInput(req: Request, res: Response, next: NextFunction) {
+  req.body.sanitizedInput = {
+    nombre: req.body.nombre,
+    cuposGral: req.body.cuposGral,
+    descripcion: req.body.descripcion,
+    fotocuenta: req.body.fotocuenta,
+    fecha: req.body.fecha,
+    hora: req.body.hora,
+    idcuenta : req.body.idcuenta,
+  }
+  //more checks here
 
-    req.body.sanitizedInput = { 
-        id : req.body.id,
-        mail : req.body.mail,
-        nombre : req.body.nombre,
-        contraseña : req.body.contraseña,
-        descripcion : req.body.descripcion,
-        foto : req.body.foto,
-    };
-    //validar tipo de datos, etc etc etc etc etc etc etc
-
-    Object.keys(req.body.sanitizedInput).forEach((key) => {
-        if (req.body.sanitizedInput[key] === undefined) {
-            delete req.body.sanitizedInput[key];
-        }
-    });
-    next();
-}
-
-function findAll(req: Request,res: Response) {
-    return res.json({data:repository.findAll()})
-}
-
-function findOne(req: Request,res: Response) {
-    const nuevaCuenta = repository.findOne({id:Number(req.params.id)}) 
-    if (!nuevaCuenta) {
-        return res.status(404).send({message: 'Cuenta no encontrada'})
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      delete req.body.sanitizedInput[key]
     }
-    return res.json(nuevaCuenta)
+  })
+  next()
 }
 
-
-function add(req: Request,res: Response) {
-    //req.body donde se encuentra la informacion del post
-    const input = req.body.sanitizedInput
-    const nuevaCuentaInput = new cuenta(
-        input.id,
-        input.mail, 
-        input.nombre, 
-        input.contraseña,
-        input.descripcion,  
-        input.foto
-    )
-    const nuevaCuenta = repository.add(nuevaCuentaInput)
-    return res.status(201).send({message: 'Cuenta creada', data: nuevaCuenta})
-}
-    
-
-function update(req: Request, res: Response){
-    req.body.sanitizedInput.id = req.params.id
-    const busca = repository.findOne({id:Number(req.params.id)})
-    
-    if(!busca){
-        return res.status(404).send({message: 'Cuenta no encontrada'})
-    }
-    const nuevaCuenta = repository.update(req.body.sanitizedInput)
-    return res.status(200).send({message:'Cuenta actualizada correctamente', data: nuevaCuenta})
-}
-//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
-
-
-function remove(req: Request,res: Response) {
-    const id=Number(req.params.id)
-    const nuevaCuenta = repository.findOne({id:Number(req.params.id)})
-
-    if(!nuevaCuenta) {
-        res.status(404).send({message:'Cuenta no encontrada'})
-    }else {
-        const nuevaCuenta = repository.delete({id})
-        res.status(200).send({message: 'Cuenta borrada satisfactoriamente'})
-    }
+async function findAll(req: Request, res: Response) {
+  res.json({ data: await repository.findAll() })
 }
 
+async function findOne(req: Request, res: Response) {
+  const id = req.params.id
+  const cuenta = await repository.findOne({ id })
+  if (!cuenta) {
+    return res.status(404).send({ message: 'cuenta not found' })
+  }
+  res.json({ data: cuenta })
+}
 
-export {sanitizedCuentaInput, findAll, findOne, add, update, remove}
+async function add(req: Request, res: Response) {
+  const input = req.body.sanitizedInput
+  const cuentaInput = new cuenta(
+    input.idcuenta,
+    input.mail,
+    input.nombre,
+    input.contraseña,
+    input.descripcion,
+    input.foto,
+  )
+
+  const nuevacuenta = await repository.add(cuentaInput)
+  return res.status(201).send({ message: 'cuenta created', data: cuenta })
+}
+
+async function update(req: Request, res: Response) {
+  const cuenta = await repository.update(req.params.id, req.body.sanitizedInput)
+
+  if (!cuenta) {
+    return res.status(404).send({ message: 'cuenta not found' })
+  }
+
+  return res.status(200).send({ message: 'cuenta updated successfully', data: cuenta })
+}
+
+async function remove(req: Request, res: Response) {
+  const id = req.params.id
+  const cuenta = await repository.delete({ id })
+
+  if (!cuenta) {
+    res.status(404).send({ message: 'cuenta not found' })
+  } else {
+    res.status(200).send({ message: 'cuenta deleted successfully' })
+  }
+}
+
+export { sanitizedcuentaInput, findAll, findOne, add, update, remove }
