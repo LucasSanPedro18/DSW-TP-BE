@@ -16,7 +16,7 @@ app.listen(3000, () => {
 // get /api/characters/ -> obtener la lsita de characters || get /api/characters/:id -> obtener el character con id = :id
 //
 // post -> crear nuevos recursos 
-// post /api/characters/ -> crea nuevo character
+// post /api/characters/ -> crea nuevo characterr
 //
 // delete -> borrar recursos
 // delete /api/characters/:id -> borrar character con id = :id

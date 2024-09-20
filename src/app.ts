@@ -1,12 +1,9 @@
 import express from 'express'
-import cors from 'cors'
-
 import { eventoRouter } from './evento/evento.routes.js'
 import { cuentaRouter } from './cuenta/cuenta.routes.js'
 
 const app = express()
 app.use(express.json())
-app.use(cors())
 
 app.use('/api/eventos', eventoRouter)
 app.use('/api/cuentas', cuentaRouter)
@@ -24,7 +21,7 @@ app.listen(3000, () => {
 // get /api/characters/ -> obtener la lsita de characters || get /api/characters/:id -> obtener el character con id = :id
 //
 // post -> crear nuevos recursos 
-// post /api/characters/ -> crea nuevo character
+// post /api/characters/ -> crea nuevo characterr
 //
 // delete -> borrar recursos
 // delete /api/characters/:id -> borrar character con id = :id

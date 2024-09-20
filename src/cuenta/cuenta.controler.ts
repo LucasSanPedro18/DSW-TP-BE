@@ -7,12 +7,11 @@ const repository = new cuentaRepository()
 function sanitizedcuentaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
-    cuposGral: req.body.cuposGral,
+    contrasenia: req.body.contrasenia,
+    mail: req.body.mail,
     descripcion: req.body.descripcion,
-    fotocuenta: req.body.fotocuenta,
-    fecha: req.body.fecha,
-    hora: req.body.hora,
-    idcuenta : req.body.idcuenta,
+    foto: req.body.foto,
+    id : req.body.id,
   }
   //more checks here
 
@@ -40,12 +39,12 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
   const cuentaInput = new cuenta(
-    input.idcuenta,
-    input.mail,
     input.nombre,
-    input.contraseña,
+    input.contrasenia,
+    input.mail,
     input.descripcion,
     input.foto,
+    input.id,
   )
 
   const nuevacuenta = await repository.add(cuentaInput)

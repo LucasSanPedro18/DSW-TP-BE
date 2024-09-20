@@ -4,7 +4,7 @@ export const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'dsw',
   password: process.env.DB_PASSWORD || 'dsw',
-  database: process.env.DB_NAME || 'GEEV',
+  database: process.env.DB_NAME || 'sge',
   waitForConnections: true,
   connectionLimit: 10,
   maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`

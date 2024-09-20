@@ -1,14 +1,9 @@
-create database if not exists GEEV;
+create database if not exists sge;
 
-use GEEV;
+use sge;
 
-## uncomment if you are not using docker
- create user if not exists dsw@'%' identified by 'dsw';
- grant select, update, insert, delete on GEEV.* to dsw@'%';
-
-
-create table if not exists `GEEV`.`eventos` (
-  `idEvento` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+create table if not exists`eventos` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(255) NULL,
   `cuposGral` INT UNSIGNED NULL,
   `descripcion` VARCHAR(255) NULL,
@@ -17,15 +12,34 @@ create table if not exists `GEEV`.`eventos` (
   `hora` INT  NULL,
   PRIMARY KEY (`id`));
 
-create table if not exists `GEEV`.`eventoCategoria` (
-  `characterId` INT UNSIGNED NOT NULL,
+create table if not exists `eventoCategoria` (
+  `id` INT UNSIGNED NOT NULL,
   `categoriaNombre` VARCHAR(255) NOT NULL,
-  PRIMARY KEY (`characterId`, `itemName`),
-  CONSTRAINT `fk_characterItem_character`
-    FOREIGN KEY (`characterId`)
-    REFERENCES `eventos`.`characters` (`id`)
+   `eventoId` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_eventoId_evento`
+    FOREIGN KEY (`eventoId`)
+    REFERENCES `eventos` (`id`)
     ON DELETE RESTRICT
     ON UPDATE CASCADE);
 
-insert into GEEV.eventos values(1,'festichola',200,'que se yo',101,11,22);
-insert into eventos.eventoCategoria values(1,'Techno');
+create table if not exists `cuentas` (
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`nombre` VARCHAR(255) NULL,
+`contrasenia` VARCHAR(255) NOT NULL,
+`mail` VARCHAR(255) NULL,
+`descripcion` VARCHAR(255) NULL,
+`foto` INT NULL,
+PRIMARY KEY (`id`));
+
+
+insert into eventos values(100,'festichola',200,'que se yo',true,'20241224',22);
+insert into GEEV.eventoCategoria values(1,'Techno',100);
+
+docker run --name dsw-sge -v BD-SGE:/var/lib/mysql -e MYSQL_ROOT_HOST='%' -e MYSQL_ALLOW_EMPTY_PASSWORD="yes" -e MYSQL_PASSWORD="dsw" -e MYSQL_USER="dsw" -e MYSQL_DATABASE='sge' -p 3305:3306 -d percona/percona-server
+
+
+docker exec -it dsw-sge mysql -u root
+
+GRANT ALL PRIVILEGES ON *.* TO 'dsw'@'%';
+FLUSH PRIVILEGES;
