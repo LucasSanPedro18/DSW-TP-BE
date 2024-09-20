@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
-import { cuentaRepository } from './cuenta.repository.js'
-import { cuenta } from './cuenta.entity.js'
+import { CuentaRepository } from './cuenta.repository.js'
+import { Cuenta } from './cuenta.entity.js'
 
-const repository = new cuentaRepository()
+const repository = new CuentaRepository()
 
-function sanitizedcuentaInput(req: Request, res: Response, next: NextFunction) {
+function sanitizedCuentaInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     nombre: req.body.nombre,
-    contrasenia: req.body.contrasenia,
+    contraseña: req.body.contraseña,
     mail: req.body.mail,
     descripcion: req.body.descripcion,
     foto: req.body.foto,
@@ -31,16 +31,16 @@ async function findOne(req: Request, res: Response) {
   const id = req.params.id
   const cuenta = await repository.findOne({ id })
   if (!cuenta) {
-    return res.status(404).send({ message: 'cuenta not found' })
+    return res.status(404).send({ message: 'Error 404. Cuenta not found!' })
   }
   res.json({ data: cuenta })
 }
 
 async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
-  const cuentaInput = new cuenta(
+  const cuentaInput = new Cuenta(
     input.nombre,
-    input.contrasenia,
+    input.contraseña,
     input.mail,
     input.descripcion,
     input.foto,
@@ -48,17 +48,17 @@ async function add(req: Request, res: Response) {
   )
 
   const nuevacuenta = await repository.add(cuentaInput)
-  return res.status(201).send({ message: 'cuenta created', data: cuenta })
+  return res.status(201).send({ message: 'Cuenta created!', data: Cuenta })
 }
 
 async function update(req: Request, res: Response) {
   const cuenta = await repository.update(req.params.id, req.body.sanitizedInput)
 
   if (!cuenta) {
-    return res.status(404).send({ message: 'cuenta not found' })
+    return res.status(404).send({ message: 'Error 404. Cuenta not found!' })
   }
 
-  return res.status(200).send({ message: 'cuenta updated successfully', data: cuenta })
+  return res.status(200).send({ message: 'Cuenta updated successfully!', data: cuenta })
 }
 
 async function remove(req: Request, res: Response) {
@@ -66,10 +66,10 @@ async function remove(req: Request, res: Response) {
   const cuenta = await repository.delete({ id })
 
   if (!cuenta) {
-    res.status(404).send({ message: 'cuenta not found' })
+    res.status(404).send({ message: 'Error 404. Cuenta not found!' })
   } else {
-    res.status(200).send({ message: 'cuenta deleted successfully' })
+    res.status(200).send({ message: 'Cuenta removed successfully!' })
   }
 }
 
-export { sanitizedcuentaInput, findAll, findOne, add, update, remove }
+export { sanitizedCuentaInput, findAll, findOne, add, update, remove }

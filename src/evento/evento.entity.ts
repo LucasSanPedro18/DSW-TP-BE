@@ -1,5 +1,5 @@
 
-export class evento{
+export class Evento{
     constructor(
         public nombre:string,
         public cuposGral:number,

@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { sanitizedcuentaInput, findAll, findOne, add, update, remove } from './cuenta.controler.js'
+import { sanitizedCuentaInput, findAll, findOne, add, update, remove } from './cuenta.controler.js'
 
-export const cuentaRouter = Router()
+export const CuentaRouter = Router()
 
-cuentaRouter.get('/', findAll)
-cuentaRouter.get('/:id', findOne)
-cuentaRouter.post('/', sanitizedcuentaInput, add)
-cuentaRouter.put('/:id', sanitizedcuentaInput, update)
-cuentaRouter.patch('/:id', sanitizedcuentaInput, update)
-cuentaRouter.delete('/:id', remove)
+CuentaRouter.get('/', findAll)
+CuentaRouter.get('/:id', findOne)
+CuentaRouter.post('/', sanitizedCuentaInput, add)
+CuentaRouter.put('/:id', sanitizedCuentaInput, update)
+CuentaRouter.patch('/:id', sanitizedCuentaInput, update)
+CuentaRouter.delete('/:id', remove)

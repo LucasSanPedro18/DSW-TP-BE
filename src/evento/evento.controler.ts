@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
-import { evento } from './evento.entity.js'
-import { eventoRepository } from './evento.repository.js'
+import { Evento } from './evento.entity.js'
+import { EventoRepository } from './evento.repository.js'
 
 
-const repository = new eventoRepository()
+const repository = new EventoRepository()
 
 function sanitizedEventoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -41,7 +41,7 @@ async function findOne(req: Request, res: Response) {
 async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput
 
-  const eventoInput = new evento(
+  const eventoInput = new Evento(
     input.nombre,
     input.cuposGral,
     input.descripcion,
@@ -52,7 +52,7 @@ async function add(req: Request, res: Response) {
   )
 
   const nuevoevento = await repository.add(eventoInput)
-  return res.status(201).send({ message: 'evento created', data: evento })
+  return res.status(201).send({ message: 'evento created', data: Evento })
 }
 
 async function update(req: Request, res: Response) {

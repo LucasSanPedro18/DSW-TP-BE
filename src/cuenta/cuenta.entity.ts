@@ -1,7 +1,7 @@
-export class cuenta{
+export class Cuenta{
     constructor(
         public nombre:string,
-        public contrasenia:string,
+        public contraseña:string,
         public mail:string,
         public descripcion:string,
         public foto:number,

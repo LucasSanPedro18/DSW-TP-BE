@@ -26,7 +26,7 @@ create table if not exists `eventoCategoria` (
 create table if not exists `cuentas` (
 `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 `nombre` VARCHAR(255) NULL,
-`contrasenia` VARCHAR(255) NOT NULL,
+`contraseña` VARCHAR(255) NOT NULL,
 `mail` VARCHAR(255) NULL,
 `descripcion` VARCHAR(255) NULL,
 `foto` INT NULL,

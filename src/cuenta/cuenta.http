@@ -13,7 +13,7 @@ Content-Type: application/json
 
 {
     "nombre":"cuenta pop",
-    "contrasenia":"1234",
+    "contraseña":"1234",
     "mail":"prueba@gmail.com",
     "descripcion":"prueba 1",
     "foto":0
@@ -26,23 +26,19 @@ Content-Type: application/json
 {
     "mail":"modprueba@gmail.com",
     "nombre":"cuenta modi",
-    "contrasenia":"user",
+    "contraseña":"user",
     "descripcion":"prueba 2",
     "foto":0
 }
-//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
-
 
 ### modificar una cuenta (PATCH - recurso parcial)
 PATCH http://localhost:3000/api/cuentas/1
 Content-Type: application/json
 
 {
-    "contrasenia":"admin",
+    "contraseña":"admin",
     "descripcion": "prueba 3"
 }
-//NO ANDA SI PONGO EL ID EN LA API, SI LO PONGO EN EL JSON SI
-
 
 ### Borrar una cuenta
 DELETE http://localhost:3000/api/cuentas/1
