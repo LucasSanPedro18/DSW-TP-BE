@@ -10,5 +10,5 @@ Comisión: 303.
 * 50449 - Orsi, Dante
 
 ### Repositorios
-* [Principal](https://github.com/LucasSanPedro18/DSW-TP)
+* [Principal](https://github.com/JoaquinGZ1/DSW-GEEV)
 * [Frontend App](https://github.com/DanteOrsi/DSW-TP-FE)
