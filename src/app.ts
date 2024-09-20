@@ -1,9 +1,11 @@
 import express from 'express'
+import cors from 'cors'
 import { eventoRouter } from './evento/evento.routes.js'
 import { cuentaRouter } from './cuenta/cuenta.routes.js'
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 app.use('/api/eventos', eventoRouter)
 app.use('/api/cuentas', cuentaRouter)
