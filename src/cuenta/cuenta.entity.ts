@@ -1,10 +1,22 @@
-export class Cuenta{
-    constructor(
-        public nombre:string,
-        public contraseña:string,
-        public mail:string,
-        public descripcion:string,
-        public foto:number,
-        public id?:number,
-    ) {}
+import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+
+@Entity()
+export class Cuenta {
+  @PrimaryKey()
+  id?: number;
+
+  @Property({ nullable: false, unique: true })
+  nickname!: string;
+
+  @Property()
+  password!: string;
+
+  @Property()
+  mail!: string;
+
+  @Property()
+  description?: string;
+
+  @Property()
+  photo?: number; //blob
 }

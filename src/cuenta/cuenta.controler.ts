@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express'
-import { CuentaRepository } from './cuenta.repository.js'
 import { Cuenta } from './cuenta.entity.js'
 
 const repository = new CuentaRepository()
