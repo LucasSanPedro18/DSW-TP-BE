@@ -2,8 +2,8 @@ import { Entity, Property, DateTimeType, Rel, ManyToOne, ManyToMany, OneToMany, 
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Categoria } from '../categoria/categoria.entity.js';
 import { Ubicacion } from '../ubicacion/ubicacion.entity.js';
-import { Organizador } from '../cuenta/organizador/organizador.entity.js';
-import { Usuario } from '../cuenta/usuario/usuario.entity.js';
+import { Organizador } from '../organizador/organizador.entity.js';
+import { Usuario } from '../usuario/usuario.entity.js';
 import { TipoEntrada } from '../tipoEntrada/tipoEntrada.entity.js';
 import { Entrada } from '../entrada/entrada.entity.js';
 

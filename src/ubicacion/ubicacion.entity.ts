@@ -2,7 +2,7 @@ import { Entity, Property, Rel, ManyToOne, OneToMany, Cascade, Collection } from
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Localidad } from '../localidad/localidad.entity.js';
 import { Evento } from '../evento/evento.entity.js';
-import { Organizador } from '../cuenta/organizador/organizador.entity.js';
+import { Organizador } from '../organizador/organizador.entity.js';
 
 @Entity()
 export class Ubicacion extends BaseEntity {

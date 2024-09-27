@@ -1,7 +1,7 @@
 import { Entity, Collection, Property, DateTimeType, ManyToOne, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { TipoEntrada } from "../tipoEntrada/tipoEntrada.entity.js";
-import { Usuario } from "../cuenta/usuario/usuario.entity.js";
+import { Usuario } from "../usuario/usuario.entity.js";
 import { Evento } from "../evento/evento.entity.js";
 
 @Entity()
