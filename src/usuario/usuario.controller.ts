@@ -28,7 +28,7 @@ async function findAll(req: Request, res: Response) {
     const usuarios = await em.find(
       Usuario,
       {},
-      { populate: ['seguidos', 'eventosUsuario', 'entradas'] }
+      { populate: ['eventosUsuario', 'entradas'] }
     );
     res.status(200).json({ message: 'found all Usuarios', data: usuarios });
   } catch (error: any) {
@@ -42,7 +42,7 @@ async function findOne(req: Request, res: Response) {
     const usuario = await em.findOneOrFail(
       Usuario,
       { DNI },
-      { populate: ['seguidos', 'eventosUsuario', 'entradas'] }
+      { populate: ['eventosUsuario', 'entradas'] }
     );
     res.status(200).json({ message: 'found Usuario', data: usuario });
   } catch (error: any) {

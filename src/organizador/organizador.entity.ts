@@ -1,4 +1,11 @@
-import { Entity, Property, OneToMany, Collection, Cascade, ManyToMany } from '@mikro-orm/core';
+import {
+  Entity,
+  Property,
+  ManyToMany,
+  Cascade,
+  OneToMany,
+  Collection,
+} from '@mikro-orm/core'
 import { Ubicacion } from "../ubicacion/ubicacion.entity.js";
 import { Evento } from "../evento/evento.entity.js";
 import { Usuario } from "../usuario/usuario.entity.js";
@@ -23,10 +30,10 @@ export class Organizador extends BaseEntity {
   })
   eventos = new Collection<Evento>(this);
 
-  @ManyToMany(() => Usuario, (usuario) => usuario.seguidos, {
+  /*@ManyToMany(() => Usuario, (usuario) => usuario.seguidos, {
     cascade: [Cascade.ALL],
   })
-  seguidores = new Collection<Usuario>(this);
+  seguidores = new Collection<Usuario>(this);*/
 
   @Property({ nullable: false, unique: true })
   nickname!: string;

@@ -1,4 +1,4 @@
-import { Entity, Property, DateTimeType, Rel, ManyToOne, ManyToMany, OneToMany, Collection, Cascade } from '@mikro-orm/core';
+import { Entity, Property, PrimaryKey, DateTimeType, Rel, ManyToOne, ManyToMany, OneToMany, Collection, Cascade } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Categoria } from '../categoria/categoria.entity.js';
 import { Ubicacion } from '../ubicacion/ubicacion.entity.js';
@@ -10,7 +10,10 @@ import { Entrada } from '../entrada/entrada.entity.js';
 @Entity()
 export class Evento extends BaseEntity {
 
-  @Property({ nullable: false, unique: true })
+  @PrimaryKey()
+  id?: number
+
+  @Property({ nullable: false, unique: false })
   name!: string;
   
   @Property({ nullable: false, unique: true })

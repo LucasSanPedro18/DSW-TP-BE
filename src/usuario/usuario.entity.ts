@@ -1,4 +1,11 @@
-import { Entity, Property, OneToMany, Collection, Cascade, ManyToMany } from '@mikro-orm/core';
+import {
+  Entity,
+  Property,
+  ManyToMany,
+  Cascade,
+  Collection,
+  OneToMany,
+} from '@mikro-orm/core'
 import { Evento } from '../evento/evento.entity.js';
 import { Organizador } from '../organizador/organizador.entity.js';
 import { Entrada } from '../entrada/entrada.entity.js';
@@ -15,11 +22,12 @@ export class Usuario extends BaseEntity {
   @Property({ nullable: false, unique: true })
   photoDNI2!: number; //blob
 
-  @ManyToMany(() => Organizador, (organizador) => organizador.seguidores, {})
-  seguidos = new Collection<Organizador>(this);
+  /*@ManyToMany(() => Organizador, (organizador) => organizador.seguidores, {})
+  seguidos = new Collection<Organizador>(this);*/
 
   @ManyToMany(() => Evento, (evento) => evento.usuarios, {
     cascade: [Cascade.ALL],
+    owner: true,
   })
   eventosUsuario = new Collection<Evento>(this);
 

@@ -1,12 +1,13 @@
-import { MikroORM } from "@mikro-orm/core";
-import { defineConfig } from '@mikro-orm/mysql';
-import { SqlHighlighter } from "@mikro-orm/sql-highlighter";
+import { MikroORM } from '@mikro-orm/core'
+import { SqlHighlighter } from '@mikro-orm/sql-highlighter'
+import { MySqlDriver } from '@mikro-orm/mysql';
 
-export const orm = await MikroORM.init(defineConfig({
+export const orm = await MikroORM.init({
   entities: ['dist/**/*.entity.js'],
   entitiesTs: ['src/**/*.entity.ts'],
-  dbName: 'sge',
-  clientUrl: 'mysql://dsw:dsw@localhost:3306/sge',
+  dbName: 'hc4gmo',
+  driver: MySqlDriver,
+  clientUrl: 'mysql://dsw:dsw@localhost:3306/hc4gmo',
   highlighter: new SqlHighlighter(),
   debug: true,
   schemaGenerator: {
@@ -15,16 +16,13 @@ export const orm = await MikroORM.init(defineConfig({
     createForeignKeyConstraints: true,
     ignoreSchema: [],
   },
-}))
+})
 
 export const syncSchema = async () => {
-
   const generator = orm.getSchemaGenerator()
-
-  await generator.updateSchema()
-
-  /*   Comandos por si queremos reinciar la base de datos
+  /*   
   await generator.dropSchema()
   await generator.createSchema()
   */
+  await generator.updateSchema()
 }
