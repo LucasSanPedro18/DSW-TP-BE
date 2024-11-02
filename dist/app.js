@@ -19,9 +19,6 @@ app.use((req, res) => {
     return res.status(404).send({ message: 'Error 404. Recurso no encontrado!' });
 });
 await syncSchema(); //never in production
-app.listen(3001, () => {
-    console.log('Server running on http://localhost:3001/');
-});
 app.use('/api/entrada', entradaRouter);
 app.use('/api/eventos', eventoRouter);
 app.use('/api/tiposEntradas', tipoEntradaRouter);
@@ -32,7 +29,7 @@ app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });
 });
 await syncSchema(); //never in production
-app.listen(3001, () => {
-    console.log('Server runnning on http://localhost:3001/');
+app.listen(4000, () => {
+    console.log('Server runnning on http://localhost:4000/');
 });
 //# sourceMappingURL=app.js.map

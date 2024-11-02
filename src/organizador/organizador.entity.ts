@@ -5,6 +5,8 @@ import {
   Cascade,
   OneToMany,
   Collection,
+  PrimaryKeyProp,
+  PrimaryKey,
 } from '@mikro-orm/core'
 import { Evento } from "../evento/evento.entity.js";
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
@@ -12,7 +14,7 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 
 @Entity()
 export class Organizador extends BaseEntity {
-  @Property({ nullable: false, unique: true })
+  @PrimaryKey()
   CUIT!: number;
 
   @OneToMany(() => Evento, (evento) => evento.organizador, {

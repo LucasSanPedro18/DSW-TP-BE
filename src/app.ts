@@ -27,9 +27,6 @@ app.use((req, res) => {
 
 await syncSchema() //never in production
 
-app.listen(3001, () => {
-    console.log('Server running on http://localhost:3001/')
-})
 
 
 app.use('/api/entrada', entradaRouter)
@@ -45,6 +42,6 @@ app.use((_, res) => {
 
 await syncSchema() //never in production
 
-app.listen(3001, () => {
-  console.log('Server runnning on http://localhost:3001/')
+app.listen(4000, () => {
+  console.log('Server runnning on http://localhost:4000/')
 })

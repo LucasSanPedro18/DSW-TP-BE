@@ -28,7 +28,7 @@ export class Evento extends BaseEntity {
   @Property({ nullable: false, unique: true })
   cupos!: number;
 
-  @Property({ nullable: false, unique: false })
+  @Property({ nullable: true, unique: false })
   description!: string;
 
   @Property({ nullable: true })
@@ -42,11 +42,13 @@ export class Evento extends BaseEntity {
 
   @OneToMany(() => Entrada, (entrada) => entrada.evento, {
     cascade: [Cascade.ALL],
+    nullable: true,
   })
   entradas = new Collection<Entrada>(this)
 
   @OneToMany(() => TipoEntrada, (tipoEntrada) => tipoEntrada.eventos, {
     cascade: [Cascade.ALL],
+    nullable:true, 
   })
   tiposEntrada = new Collection<TipoEntrada>(this)
 
@@ -56,7 +58,7 @@ export class Evento extends BaseEntity {
   @ManyToOne(() => Organizador, {nullable: false})
   organizador!: Organizador;
 
-  @ManyToMany(() => Usuario, (usuario) => usuario.eventosUsuario)
+  @ManyToMany(() => Usuario, (usuario) => usuario.eventosUsuario, { nullable: true })
   usuarios = new Collection<Usuario>(this);
 
   
