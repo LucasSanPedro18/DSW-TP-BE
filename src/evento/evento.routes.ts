@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { sanitizedEventoInput, findAll, findOne, add, update, remove } from './evento.controler.js'
+import { sanitizedEventoInput, findAll, findOne, add, update, remove } from './evento.controller.js'
 
-export const EventoRouter = Router()
+export const eventoRouter = Router()
 
-EventoRouter.get('/', findAll)
-EventoRouter.get('/:id', findOne)
-EventoRouter.post('/', sanitizedEventoInput, add)
-EventoRouter.put('/:id', sanitizedEventoInput, update)
-EventoRouter.patch('/:id', sanitizedEventoInput, update)
-EventoRouter.delete('/:id', remove)
+eventoRouter.get('/', findAll)
+eventoRouter.get('/:id', findOne)
+eventoRouter.post('/', sanitizedEventoInput, add)
+eventoRouter.put('/:id', sanitizedEventoInput, update)
+eventoRouter.patch('/:id', sanitizedEventoInput, update)
+eventoRouter.delete('/:id', remove)

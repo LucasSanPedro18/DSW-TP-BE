@@ -1,4 +1,4 @@
-import { Entity, Collection, Property, OneToMany, ManyToOne } from "@mikro-orm/core";
+import { Entity, Collection, Property, OneToMany, ManyToOne, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { Entrada } from '../entrada/entrada.entity.js';
 import { Evento } from '../evento/evento.entity.js';
@@ -18,5 +18,5 @@ export class TipoEntrada extends BaseEntity {
   entradas = new Collection<Entrada>(this);
 
   @ManyToOne(() => Evento, { nullable: false })
-  evento!: Evento;
+  evento!: Rel<Evento>;
 }

@@ -1,9 +1,8 @@
 import { Entity, PrimaryKey, Property } from '@mikro-orm/core';
+import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 
 @Entity()
-export class Cuenta {
-  @PrimaryKey()
-  id?: number;
+export class Cuenta extends BaseEntity {
 
   @Property({ nullable: false, unique: true })
   nickname!: string;
