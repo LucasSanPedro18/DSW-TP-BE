@@ -2,11 +2,9 @@ import 'reflect-metadata'
 import express from 'express'
 import cors from 'cors'
 import { eventoRouter } from './evento/evento.routes.js'
-import { cuentaRouter } from './cuenta/cuenta.routes.js'
 import { tipoEntradaRouter } from './tipoEntrada/tipoEntrada.routes.js'
 import { organizadorRouter } from './organizador/organizador.routes.js'
 import { usuarioRouter } from './usuario/usuario.routes.js'
-import { ubicacionRouter } from './ubicacion/ubicacion.routes.js'
 import { entradaRouter } from './entrada/entrada.routes.js'
 import { categoriaRouter } from './categoria/categoria.routes.js'
 import { orm, syncSchema } from './shared/db/orm.js'
@@ -29,17 +27,15 @@ app.use((req, res) => {
 
 await syncSchema() //never in production
 
-app.listen(3000, () => {
-    console.log('Server running on http://localhost:3000/')
+app.listen(3001, () => {
+    console.log('Server running on http://localhost:3001/')
 })
 
 
 app.use('/api/entrada', entradaRouter)
 app.use('/api/eventos', eventoRouter)
-app.use('/api/cuentas', cuentaRouter)
 app.use('/api/tiposEntradas', tipoEntradaRouter)
 app.use('/api/organizadores', organizadorRouter)
-app.use('/api/ubicaciones', ubicacionRouter)
 app.use('/api/usuarios', usuarioRouter)
 app.use('/api/categorias', categoriaRouter)
 
@@ -49,6 +45,6 @@ app.use((_, res) => {
 
 await syncSchema() //never in production
 
-app.listen(3000, () => {
-  console.log('Server runnning on http://localhost:3000/')
+app.listen(3001, () => {
+  console.log('Server runnning on http://localhost:3001/')
 })

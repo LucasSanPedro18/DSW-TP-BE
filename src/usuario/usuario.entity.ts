@@ -5,25 +5,33 @@ import {
   Cascade,
   Collection,
   OneToMany,
+  PrimaryKey,
 } from '@mikro-orm/core'
 import { Evento } from '../evento/evento.entity.js';
-import { Organizador } from '../organizador/organizador.entity.js';
 import { Entrada } from '../entrada/entrada.entity.js';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
+import { Categoria } from '../categoria/categoria.entity.js'
 
 @Entity()
 export class Usuario extends BaseEntity {
-  @Property({ nullable: false, unique: true })
+
+  @PrimaryKey({ nullable: false, unique: true })
   DNI!: number;
 
   @Property({ nullable: false, unique: true })
-  photoDNI1!: number; //blob
+  nickname!: string;
 
-  @Property({ nullable: false, unique: true })
-  photoDNI2!: number; //blob
+  @Property({ nullable: false})
+  password!: string;
 
-  /*@ManyToMany(() => Organizador, (organizador) => organizador.seguidores, {})
-  seguidos = new Collection<Organizador>(this);*/
+  @Property({ nullable: false})
+  mail!: string;
+
+  @Property({nullable: true})
+  description?: string;
+
+  @Property({nullable: true})
+  photo?: Blob; //blob
 
   @ManyToMany(() => Evento, (evento) => evento.usuarios, {
     cascade: [Cascade.ALL],
@@ -36,18 +44,8 @@ export class Usuario extends BaseEntity {
   })
   entradas = new Collection<Entrada>(this);
 
-  @Property({ nullable: false, unique: true })
-  nickname!: string;
-
-  @Property()
-  password!: string;
-
-  @Property()
-  mail!: string;
-
-  @Property()
-  description?: string;
-
-  @Property()
-  photo?: number; //blob
-}{}
+  @ManyToMany(() => Categoria, (categoria) => categoria.usuariosSeguidos, {
+    owner: true,
+  })
+  categoriasSeguidas = new Collection<Categoria>(this);
+}

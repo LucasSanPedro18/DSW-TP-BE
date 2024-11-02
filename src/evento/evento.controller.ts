@@ -37,7 +37,7 @@ async function findAll(req: Request, res: Response) {
     const eventos = await em.find(
       Evento,
       {},
-      { populate: ['entradas', 'tiposEntrada', 'categoria', 'ubicacion', 'organizador', 'usuarios'] }
+      { populate: ['entradas', 'tiposEntrada', 'organizador', 'usuarios'] }
     )
     res.status(200).json({ message: 'found all events', data: eventos })
   } catch (error: any) {
@@ -51,7 +51,7 @@ async function findOne(req: Request, res: Response) {
     const evento = await em.findOneOrFail(
       Evento,
       { id },
-      { populate: ['entradas', 'tiposEntrada', 'categoria', 'ubicacion', 'organizador', 'usuarios'] }
+      { populate: ['entradas', 'tiposEntrada', 'organizador', 'usuarios'] }
     )
     res.status(200).json({ message: 'found evento', data: evento })
   } catch (error: any) {

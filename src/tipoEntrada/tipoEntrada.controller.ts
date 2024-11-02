@@ -31,7 +31,7 @@ async function findAll(req: Request, res: Response) {
     const tiposEntradas = await em.find(
       TipoEntrada,
       {},
-      { populate: ['entradas', 'evento'] }
+      { populate: ['entradas'] }
     );
     res.status(200).json({ message: 'found all tipoEntradas', data: tiposEntradas });
   } catch (error: any) {
@@ -45,7 +45,7 @@ async function findOne(req: Request, res: Response) {
     const tipoEntrada = await em.findOneOrFail(
       TipoEntrada,
       { id },
-      { populate: ['entradas', 'evento'] }
+      { populate: ['entradas'] }
     );
     res.status(200).json({ message: 'found tipoEntrada', data: tipoEntrada });
   } catch (error: any) {

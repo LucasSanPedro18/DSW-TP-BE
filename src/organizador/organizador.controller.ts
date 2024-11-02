@@ -27,7 +27,7 @@ async function findAll(req: Request, res: Response) {
     const organizadores = await em.find(
       Organizador,
       {},
-      { populate: ['ubicaciones', 'eventos'] }
+      { populate: ['eventos'] }
     );
     res.status(200).json({ message: 'found all organizadores', data: organizadores });
   } catch (error: any) {
@@ -41,7 +41,7 @@ async function findOne(req: Request, res: Response) {
     const organizador = await em.findOneOrFail(
       Organizador,
       { CUIT },
-      { populate: ['ubicaciones', 'eventos'] }
+      { populate: ['eventos'] }
     );
     res.status(200).json({ message: 'found Organizador', data: organizador });
   } catch (error: any) {

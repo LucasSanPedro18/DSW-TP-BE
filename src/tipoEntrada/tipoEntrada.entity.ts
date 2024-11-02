@@ -12,11 +12,11 @@ export class TipoEntrada extends BaseEntity {
   value?: number;
 
   @Property({ nullable: true })
-  cupo?: number;
+  cupos?: number;
 
   @OneToMany(() => Entrada, (entrada) => entrada.tipoEntrada)
   entradas = new Collection<Entrada>(this);
 
   @ManyToOne(() => Evento, { nullable: false })
-  evento!: Rel<Evento>;
+  eventos!: Rel<Evento>;
 }

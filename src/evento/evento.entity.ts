@@ -1,11 +1,20 @@
-import { Entity, Property, PrimaryKey, DateTimeType, Rel, ManyToOne, ManyToMany, OneToMany, Collection, Cascade } from '@mikro-orm/core';
+import {
+  Entity,
+  Property,
+  ManyToMany,
+  Cascade,
+  Collection,
+  OneToMany,
+  PrimaryKey,
+  ManyToOne,
+  DateTimeType,
+} from '@mikro-orm/core'
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
-import { Categoria } from '../categoria/categoria.entity.js';
-import { Ubicacion } from '../ubicacion/ubicacion.entity.js';
 import { Organizador } from '../organizador/organizador.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
 import { TipoEntrada } from '../tipoEntrada/tipoEntrada.entity.js';
 import { Entrada } from '../entrada/entrada.entity.js';
+import { Categoria } from '../categoria/categoria.entity.js';
 
 @Entity()
 export class Evento extends BaseEntity {
@@ -28,24 +37,24 @@ export class Evento extends BaseEntity {
   @Property({ type: DateTimeType, nullable: true })
   date?: Date; 
 
+  @Property({ nullable: false, unique: false })
+  ubicacion!: string;
+
   @OneToMany(() => Entrada, (entrada) => entrada.evento, {
     cascade: [Cascade.ALL],
   })
   entradas = new Collection<Entrada>(this)
 
-  @OneToMany(() => TipoEntrada, (tipoEntrada) => tipoEntrada.evento, {
+  @OneToMany(() => TipoEntrada, (tipoEntrada) => tipoEntrada.eventos, {
     cascade: [Cascade.ALL],
   })
   tiposEntrada = new Collection<TipoEntrada>(this)
 
   @ManyToOne(() => Categoria, {nullable: false})
-  categoria!: Rel<Categoria>
-
-  @ManyToOne(() => Ubicacion, {nullable: false})
-  ubicacion!: Rel<Ubicacion>
+  eventoCategoria! : Categoria;
 
   @ManyToOne(() => Organizador, {nullable: false})
-  organizador!: Rel<Organizador>
+  organizador!: Organizador;
 
   @ManyToMany(() => Usuario, (usuario) => usuario.eventosUsuario)
   usuarios = new Collection<Usuario>(this);
