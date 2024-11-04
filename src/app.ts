@@ -15,19 +15,15 @@ import { RequestContext } from '@mikro-orm/core'
 const app = express()
 app.use(express.json())
 
+app.use(cors({
+    origin: 'http://localhost:3000',
+}));
+
 //luego de los middlewares base
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next)
 })
 //antes de las rutas y middlewares de negocio
-
-app.use((req, res) => {
-    return res.status(404).send({message:'Error 404. Recurso no encontrado!'})
-})
-
-await syncSchema() //never in production
-
-
 
 app.use('/api/entrada', entradaRouter)
 app.use('/api/eventos', eventoRouter)
@@ -35,6 +31,8 @@ app.use('/api/tiposEntradas', tipoEntradaRouter)
 app.use('/api/organizadores', organizadorRouter)
 app.use('/api/usuarios', usuarioRouter)
 app.use('/api/categorias', categoriaRouter)
+
+
 
 app.use((_, res) => {
   return res.status(404).send({ message: 'Resource not found' })

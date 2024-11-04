@@ -19,13 +19,10 @@ import { Categoria } from '../categoria/categoria.entity.js';
 @Entity()
 export class Evento extends BaseEntity {
 
-  @PrimaryKey()
-  id?: number
-
   @Property({ nullable: false, unique: false })
   name!: string;
   
-  @Property({ nullable: false, unique: true })
+  @Property({ nullable: false})
   cupos!: number;
 
   @Property({ nullable: true, unique: false })

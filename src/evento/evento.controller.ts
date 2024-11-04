@@ -12,12 +12,13 @@ function sanitizedEventoInput(
   req.body.sanitizedInput = {
     name: req.body.name,
     cupos: req.body.cupos,
-    descrption: req.body.photo,
+    descrption: req.body.description,
+    photo:req.body.photo,
     date: req.body.date,
+    ubicacion: req.body.ubicacion,
     entradas: req.body.entradas,
     tiposEntrada: req.body.tiposEntrada,
-    categoria: req.body.categoria,
-    ubicacion: req.body.ubicacion,
+    eventoCategoria: req.body.eventoCategoria,
     organizador: req.body.organizador,
     usuarios: req.body.usuarios,
   
@@ -37,7 +38,7 @@ async function findAll(req: Request, res: Response) {
     const eventos = await em.find(
       Evento,
       {},
-      { populate: ['entradas', 'tiposEntrada', 'organizador', 'usuarios'] }
+      { populate: ['entradas', 'tiposEntrada',  'usuarios'] }
     )
     res.status(200).json({ message: 'found all events', data: eventos })
   } catch (error: any) {

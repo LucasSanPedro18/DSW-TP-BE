@@ -14,8 +14,8 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 
 @Entity()
 export class Organizador extends BaseEntity {
-  @PrimaryKey()
-  CUIT!: number;
+  @Property()
+  CUIT!: bigint;
 
   @OneToMany(() => Evento, (evento) => evento.organizador, {
     cascade: [Cascade.ALL],

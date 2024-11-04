@@ -30,7 +30,7 @@ async function findAll(req: Request, res: Response) {
     const categorias = await em.find(
       Categoria,
       {},
-      { populate: ['eventos'] }
+      { populate: ['eventos','usuariosSeguidos'] }
     )
     res.status(200).json({ message: 'found all categorias', data: categorias })
   } catch (error: any) {

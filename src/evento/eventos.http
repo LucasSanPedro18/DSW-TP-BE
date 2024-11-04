@@ -10,12 +10,13 @@ POST http://localhost:4000/api/eventos
 Content-Type: application/json
 
 {
-    "nombre":"lolapalloza",
-    "cuposGral":1234,
-    "descripcion":"prueba 1",
-    "fotoEvento":0,
-    "fecha": 20240312,
-    "hora": 14
+    "id":1,
+    "cuposGral":200,
+    "eventoCategoria":1,
+    "CUIT": 20419513311,
+    "nickname": "Duar",
+    "password":"asdasdasd1",
+    "mail": "joaquingm786@gmail.com"
 }
 
 
