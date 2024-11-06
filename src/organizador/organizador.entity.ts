@@ -1,40 +1,36 @@
 import {
   Entity,
   Property,
-  ManyToMany,
-  Cascade,
   OneToMany,
   Collection,
-  PrimaryKeyProp,
-  PrimaryKey,
-} from '@mikro-orm/core'
+  Cascade,
+} from '@mikro-orm/core';
 import { Evento } from "../evento/evento.entity.js";
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 
-
 @Entity()
 export class Organizador extends BaseEntity {
-  @Property()
+  // CUIT debe ser un número entero (si es largo, usar bigint)
+  @Property({ type: 'bigint' })
   CUIT!: bigint;
 
   @OneToMany(() => Evento, (evento) => evento.organizador, {
-    cascade: [Cascade.ALL],
+    cascade: [Cascade.ALL], // Permite que los eventos se gestionen junto con el organizador
   })
   eventos = new Collection<Evento>(this);
 
   @Property({ nullable: false, unique: true })
-  nickname!: string;
+  nickname!: string; // El nickname debe ser único
 
-  @Property({ nullable: false})
-  password!: string;
+  @Property({ nullable: false })
+  password!: string; // Contraseña, obligatoria
 
   @Property({ nullable: false, unique: true })
-  mail!: string;
+  mail!: string; // Correo electrónico, obligatorio y único
 
   @Property({ nullable: true })
-  description?: string;
+  description?: string; // Descripción opcional del organizador
 
-  @Property({nullable: true})
-  photo?: number; //blob
-
-}{}
+  @Property({ nullable: true })
+  photo?: string; // Referencia a una URL o una ruta de la imagen (en lugar de number)
+}
