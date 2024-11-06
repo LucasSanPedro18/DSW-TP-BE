@@ -10,7 +10,6 @@ import { entradaRouter } from './entrada/entrada.routes.js';
 import { categoriaRouter } from './categoria/categoria.routes.js';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-import { authRouter } from './auth/auth.routes.js'; // Ahora debería funcionar sin problemas
 const app = express();
 app.use(express.json());
 app.use(cors({
@@ -27,8 +26,6 @@ app.use('/api/tiposEntradas', tipoEntradaRouter);
 app.use('/api/organizadores', organizadorRouter);
 app.use('/api/usuarios', usuarioRouter);
 app.use('/api/categorias', categoriaRouter);
-// Rutas de autenticación
-app.use('/api/auth', authRouter);
 // Ruta para manejar recursos no encontrados
 app.use((_, res) => {
     return res.status(404).send({ message: 'Resource not found' });

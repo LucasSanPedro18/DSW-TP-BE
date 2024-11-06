@@ -10,7 +10,8 @@ import { entradaRouter } from './entrada/entrada.routes.js';
 import { categoriaRouter } from './categoria/categoria.routes.js';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
-import { authRouter } from './auth/auth.routes';  // Ahora debería funcionar sin problemas
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 app.use(express.json());
@@ -32,8 +33,7 @@ app.use('/api/organizadores', organizadorRouter);
 app.use('/api/usuarios', usuarioRouter);
 app.use('/api/categorias', categoriaRouter);
 
-// Rutas de autenticación
-app.use('/api/auth', authRouter);
+
 
 // Ruta para manejar recursos no encontrados
 app.use((_, res) => {
