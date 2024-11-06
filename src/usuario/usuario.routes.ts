@@ -6,6 +6,8 @@ import {
   add,
   update,
   remove,
+  login,
+  register,
 } from './usuario.controller.js';
 
 export const usuarioRouter = Router();
@@ -16,3 +18,5 @@ usuarioRouter.post('/', sanitizedUsuarioInput, add);
 usuarioRouter.put('/:id', sanitizedUsuarioInput, update);
 usuarioRouter.patch('/:id', sanitizedUsuarioInput, update);
 usuarioRouter.delete('/:id', remove);
+usuarioRouter.post('/login', login);
+usuarioRouter.post('/register', register);

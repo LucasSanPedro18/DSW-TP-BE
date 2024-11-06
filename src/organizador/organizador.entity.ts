@@ -32,5 +32,5 @@ export class Organizador extends BaseEntity {
   description?: string; // Descripción opcional del organizador
 
   @Property({ nullable: true })
-  photo?: string; // Referencia a una URL o una ruta de la imagen (en lugar de number)
+  photo?: Blob; // Referencia a una URL o una ruta de la imagen (en lugar de number)
 }

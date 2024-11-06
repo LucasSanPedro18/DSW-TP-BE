@@ -18,6 +18,7 @@ app.use(express.json());
 
 app.use(cors({
     origin: 'http://localhost:3000',
+    credentials: true
 }));
 
 // Creación del contexto para la base de datos

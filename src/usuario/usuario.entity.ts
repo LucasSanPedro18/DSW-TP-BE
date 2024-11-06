@@ -5,7 +5,6 @@ import {
   Cascade,
   Collection,
   OneToMany,
-  PrimaryKey,
 } from '@mikro-orm/core'
 import { Evento } from '../evento/evento.entity.js';
 import { Entrada } from '../entrada/entrada.entity.js';
@@ -15,7 +14,7 @@ import { Categoria } from '../categoria/categoria.entity.js'
 @Entity()
 export class Usuario extends BaseEntity {
 
-  @PrimaryKey({ nullable: false, unique: true })
+  @Property({ nullable: false, unique: true })
   DNI!: number;
 
   @Property({ nullable: false, unique: true })
