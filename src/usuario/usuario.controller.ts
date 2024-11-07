@@ -28,6 +28,8 @@ function sanitizedUsuarioInput(req: Request, res: Response, next: NextFunction) 
   next();
 }
 
+
+
 async function register(req:Request, res:Response) {
   const { nickname, mail, password, DNI, description } = req.body;
 
@@ -139,10 +141,33 @@ async function add(req: Request, res: Response) {
 async function update(req: Request, res: Response) {
   try {
     const DNI = Number.parseInt(req.params.DNI);
+    
+    // Comprobamos si el DNI del usuario que intenta actualizar es el mismo que el del token
+    const token = req.headers['authorization']?.split(' ')[1]; // Extraemos el token de los headers
+    if (!token) {
+      return res.status(401).json({ message: 'Token de autenticación requerido' });
+    }
+
+    // Verificar el token
+    const decoded = jwt.verify(token, 'secreto'); // 'secreto' es la clave secreta que usas para firmar el token
+    if (!decoded) {
+      return res.status(401).json({ message: 'Token inválido' });
+    }
+
+    // Validar que el usuario esté tratando de actualizar su propio perfil
+    if ((decoded as jwt.JwtPayload).userId !== DNI) {
+      return res.status(403).json({ message: 'No tiene permiso para actualizar este perfil' });
+    }
+
+    // Buscar el usuario que se va a actualizar
     const usuarioToUpdate = await em.findOneOrFail(Usuario, { DNI });
+
+    // Asignar los nuevos datos
     em.assign(usuarioToUpdate, req.body.sanitizedInput);
+
     await em.flush();
-    res.status(200).json({ message: 'Usuario updated', data: usuarioToUpdate });
+
+    res.status(200).json({ message: 'Usuario actualizado correctamente', data: usuarioToUpdate });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

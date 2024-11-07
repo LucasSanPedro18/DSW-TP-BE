@@ -6,6 +6,8 @@ import {
   add,
   update,
   remove,
+  login,
+  register,
 } from './organizador.controller.js';
 
 export const organizadorRouter = Router();
@@ -16,3 +18,5 @@ organizadorRouter.post('/', sanitizedOrganizadorInput, add);
 organizadorRouter.put('/:id', sanitizedOrganizadorInput, update);
 organizadorRouter.patch('/:id', sanitizedOrganizadorInput, update);
 organizadorRouter.delete('/:id', remove);
+organizadorRouter.post('/login', login);
+organizadorRouter.post('/register', register);
