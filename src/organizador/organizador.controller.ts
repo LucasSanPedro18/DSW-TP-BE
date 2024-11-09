@@ -150,12 +150,44 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const CUIT = Number.parseInt(req.params.CUIT);
+    
+    
+    const CUIT = Number.parseInt(req.params.CUIT);  // Se asume que el CUIT es un parámetro en la URL
+    
+  // Verificar si el CUIT es válido
+      if (isNaN(CUIT)) {
+        return res.status(400).json({ message: 'CUIT inválido' });
+      }
+
+    // Extraer el token de los headers
+    const token = req.headers['authorization']?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'Token de autenticación requerido' });
+    }
+
+    // Verificar el token con la clave secreta
+    const decoded = jwt.verify(token, 'secreto');  // Cambia 'secreto' por tu clave secreta
+    if (!decoded) {
+      return res.status(401).json({ message: 'Token inválido' });
+    }
+
+    const CUITprueba = req.params.CUIT;
+    console.log('CUIT recibido:', CUITprueba);  // Asegúrate de que el CUIT está llegando correctamente
+
+
+    // Buscar el organizador que se desea actualizar
     const organizadorToUpdate = await em.findOneOrFail(Organizador, { CUIT });
+
+    // Asignar los nuevos datos del cuerpo de la solicitud a la entidad organizador
     em.assign(organizadorToUpdate, req.body.sanitizedInput);
+
+    // Guardar los cambios en la base de datos
     await em.flush();
-    res.status(200).json({ message: 'Organizador updated', data: organizadorToUpdate });
+
+    // Responder con los datos del organizador actualizado
+    res.status(200).json({ message: 'Organizador actualizado correctamente', data: organizadorToUpdate });
   } catch (error: any) {
+    // Si ocurre un error, responder con el mensaje
     res.status(500).json({ message: error.message });
   }
 }
