@@ -26,6 +26,43 @@ function sanitizedOrganizadorInput(req: Request, res: Response, next: NextFuncti
 }
 
 
+
+async function findEventosByOrganizador(req: Request, res: Response) {
+  try {
+    const organizadorId = Number.parseInt(req.params.id);
+
+    // Aseguramos que el ID del organizador sea válido
+    if (isNaN(organizadorId)) {
+      return res.status(400).json({ message: 'ID de organizador inválido' });
+    }
+
+    // Buscar el organizador por su ID y cargar los eventos con populate
+    const organizador = await em.findOneOrFail(
+      Organizador,
+      { id: organizadorId },
+      { populate: ['eventos'] }  // Asegúrate de que 'eventos' esté correctamente poblado
+    );
+
+    // Si no hay eventos, se maneja aquí
+    if (organizador.eventos.isEmpty()) {
+      return res.status(200).json({
+        message: 'No se encontraron eventos para este organizador.',
+        data: [],
+      });
+    }
+
+    // Devolver los eventos
+    res.status(200).json({
+      message: 'Eventos del organizador encontrados',
+      data: organizador.eventos.getItems(), // Usamos getItems() para convertir la colección en un array
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener los eventos del organizador' });
+  }
+}
+
+
 async function login(req: Request, res: Response) {
   const { mail, password } = req.body;
   console.log('Datos recibidos:', { mail, password });  // Asegúrate de que los datos están llegando correctamente
@@ -54,6 +91,8 @@ async function login(req: Request, res: Response) {
         CUIT: organizador.CUIT,
         nickname: organizador.nickname,
         mail: organizador.mail,
+        id: organizador.id,  // Asegúrate de incluir el id aquí
+
       },
       token: token,  // Aquí debes enviar el token generado
     });
@@ -202,4 +241,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizedOrganizadorInput, findAll, findOne, add, update, remove, login, register };
+export { sanitizedOrganizadorInput, findAll, findOne, add, update, remove, login, register, findEventosByOrganizador };

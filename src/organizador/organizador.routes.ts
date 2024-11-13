@@ -8,6 +8,7 @@ import {
   remove,
   login,
   register,
+  findEventosByOrganizador,
 } from './organizador.controller.js';
 
 export const organizadorRouter = Router();
@@ -20,3 +21,4 @@ organizadorRouter.put('/update/:id', sanitizedOrganizadorInput, update);
 organizadorRouter.delete('/:id', remove);
 organizadorRouter.post('/login', login);
 organizadorRouter.post('/register', register);
+organizadorRouter.get('/:id/eventos', findEventosByOrganizador); // Nueva ruta para obtener eventos
