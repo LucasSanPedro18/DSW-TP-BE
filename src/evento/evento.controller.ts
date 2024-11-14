@@ -4,16 +4,11 @@ import { orm } from '../shared/db/orm.js'
 
 const em = orm.em
 
-function sanitizedEventoInput(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+function sanitizedEventoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
     name: req.body.name,
     cupos: req.body.cupos,
-    descrption: req.body.description,
-    photo:req.body.photo,
+    description: req.body.description,
     date: req.body.date,
     ubicacion: req.body.ubicacion,
     entradas: req.body.entradas,
@@ -21,16 +16,20 @@ function sanitizedEventoInput(
     eventoCategoria: req.body.eventoCategoria,
     organizador: req.body.organizador,
     usuarios: req.body.usuarios,
-  
-  }
-  //more checks here
+  };
 
+  // Si el archivo fue cargado, añade la ruta del archivo a los datos
+  if (req.file) {
+    req.body.sanitizedInput.photo = req.file.path;
+  }
+
+  // Elimina los valores `undefined`
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
-      delete req.body.sanitizedInput[key]
+      delete req.body.sanitizedInput[key];
     }
-  })
-  next()
+  });
+  next();
 }
 
 async function findAll(req: Request, res: Response) {
@@ -62,11 +61,28 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const evento = em.create(Evento, req.body.sanitizedInput)
-    await em.flush()
-    res.status(201).json({ message: 'evento created', data: evento })
-  } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    // Obtener un fork del EntityManager global
+    const em = orm.em.fork();
+
+    const eventoData = req.body.sanitizedInput;
+    
+    if (req.file) {
+      // Asumiendo que el archivo es una imagen y se guarda en 'req.file'
+      eventoData.photo = req.file.path; // O la propiedad que quieras guardar (por ejemplo, req.file.filename)
+    }
+
+    // Crear el evento con los datos sanitizados (incluyendo la foto si existe)
+    const evento = em.create(Evento, eventoData);
+    
+    // Persistir y hacer flush de los datos
+    await em.persistAndFlush(evento);
+    
+    // Responder con el evento creado
+    res.status(201).json({ message: 'Evento creado', data: evento });
+  } catch (error) {
+    const err = error as any;
+    console.error('Error creando el evento:', err.response ? err.response.data : err.message);
+    res.status(500).json({ message: `Error al crear el evento: ${err.message}` });
   }
 }
 
