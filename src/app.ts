@@ -16,10 +16,12 @@ import jwt from 'jsonwebtoken';
 const app = express();
 app.use(express.json());
 
-app.use(cors({
+app.use(
+  cors({
     origin: 'http://localhost:3000',
-    credentials: true
-}));
+    credentials: true,
+  })
+);
 
 // Creación del contexto para la base de datos
 app.use((req, res, next) => {
@@ -33,8 +35,6 @@ app.use('/api/tiposEntradas', tipoEntradaRouter);
 app.use('/api/organizadores', organizadorRouter);
 app.use('/api/usuarios', usuarioRouter);
 app.use('/api/categorias', categoriaRouter);
-
-
 
 // Ruta para manejar recursos no encontrados
 app.use((_, res) => {

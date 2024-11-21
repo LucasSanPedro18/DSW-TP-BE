@@ -8,7 +8,7 @@ import {
   PrimaryKey,
   ManyToOne,
   DateTimeType,
-} from '@mikro-orm/core'
+} from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Organizador } from '../organizador/organizador.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
@@ -18,21 +18,20 @@ import { Categoria } from '../categoria/categoria.entity.js';
 
 @Entity()
 export class Evento extends BaseEntity {
-
   @Property({ nullable: false, unique: false })
   name!: string;
-  
-  @Property({ nullable: false})
+
+  @Property({ nullable: false })
   cupos!: number;
 
   @Property({ nullable: true, unique: false })
   description!: string;
 
   @Property({ nullable: true })
-  photo?: number; //blob
+  photo?: string; //blob
 
   @Property({ type: DateTimeType, nullable: true })
-  date?: Date; 
+  date?: Date;
 
   @Property({ nullable: false, unique: false })
   ubicacion!: string;
@@ -41,22 +40,22 @@ export class Evento extends BaseEntity {
     cascade: [Cascade.ALL],
     nullable: true,
   })
-  entradas = new Collection<Entrada>(this)
+  entradas = new Collection<Entrada>(this);
 
   @OneToMany(() => TipoEntrada, (tipoEntrada) => tipoEntrada.eventos, {
     cascade: [Cascade.ALL],
-    nullable:true, 
+    nullable: true,
   })
-  tiposEntrada = new Collection<TipoEntrada>(this)
+  tiposEntrada = new Collection<TipoEntrada>(this);
 
-  @ManyToOne(() => Categoria, {nullable: false})
-  eventoCategoria! : Categoria;
+  @ManyToOne(() => Categoria, { nullable: false })
+  eventoCategoria!: Categoria;
 
-  @ManyToOne(() => Organizador, {nullable: false})
+  @ManyToOne(() => Organizador, { nullable: false })
   organizador!: Organizador;
 
-  @ManyToMany(() => Usuario, (usuario) => usuario.eventosUsuario, { nullable: true })
+  @ManyToMany(() => Usuario, (usuario) => usuario.eventosUsuario, {
+    nullable: true,
+  })
   usuarios = new Collection<Usuario>(this);
-
-  
 }
