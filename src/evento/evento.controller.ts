@@ -59,32 +59,41 @@ async function findOne(req: Request, res: Response) {
   }
 }
 
+
 async function add(req: Request, res: Response) {
   try {
     // Obtener un fork del EntityManager global
     const em = orm.em.fork();
 
-    const eventoData = req.body.sanitizedInput;
-    
+    // Los datos del evento (sin sanitización en este ejemplo, ajusta según necesidad)
+    const eventoData = req.body;
+
+    // Verifica si se subió un archivo de imagen
     if (req.file) {
-      // Asumiendo que el archivo es una imagen y se guarda en 'req.file'
-      eventoData.photo = req.file.path; // O la propiedad que quieras guardar (por ejemplo, req.file.filename)
+      // Guarda la ruta del archivo en el campo `photo`
+      eventoData.photo = req.file.path.replace(/\\/g, '/'); // Normaliza la ruta para sistemas Windows
     }
 
-    // Crear el evento con los datos sanitizados (incluyendo la foto si existe)
+    // Crear el evento con los datos recibidos
     const evento = em.create(Evento, eventoData);
-    
+
     // Persistir y hacer flush de los datos
     await em.persistAndFlush(evento);
-    
+
     // Responder con el evento creado
-    res.status(201).json({ message: 'Evento creado', data: evento });
+    res.status(201).json({
+      message: 'Evento creado con éxito',
+      data: evento,
+    });
   } catch (error) {
     const err = error as any;
-    console.error('Error creando el evento:', err.response ? err.response.data : err.message);
-    res.status(500).json({ message: `Error al crear el evento: ${err.message}` });
+    console.error('Error creando el evento:', err.message);
+    res.status(500).json({
+      message: `Error al crear el evento: ${err.message}`,
+    });
   }
 }
+
 
 async function update(req: Request, res: Response) {
   try {

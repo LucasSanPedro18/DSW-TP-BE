@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import multer from 'multer';
+import multer from 'multer';  // Importación de multer directamente
 import { sanitizedEventoInput, findAll, findOne, add, update, remove } from './evento.controller.js';
+import upload from '../multer.js';  // Importar el middleware de multer desde el archivo 'multer.ts'
 
 export const eventoRouter = Router();
 
-// Configura el almacenamiento para `multer`
-const upload = multer({ dest: 'uploads/' }); // Puedes especificar un directorio para guardar archivos cargados
-
+// Aquí ya no es necesario redefinir `upload`, solo debes usar el middleware importado
 eventoRouter.get('/', findAll);
 eventoRouter.get('/:id', findOne);
 eventoRouter.post('/', upload.single('photo'), sanitizedEventoInput, add); // `upload.single('photo')` maneja el archivo

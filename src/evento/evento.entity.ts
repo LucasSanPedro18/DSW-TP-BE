@@ -28,7 +28,7 @@ export class Evento extends BaseEntity {
   description!: string;
 
   @Property({ nullable: true })
-  photo?: string; //blob
+  photo?: String; //blob
 
   @Property({ type: DateTimeType, nullable: true })
   date?: Date;

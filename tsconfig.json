@@ -15,7 +15,7 @@
     "experimentalDecorators": true
   },
   "include": [
-    "src/multer.d.ts",
+    "src/multer.ts",
     "src/**/*",        
     "**/*.ts"         
   ],
