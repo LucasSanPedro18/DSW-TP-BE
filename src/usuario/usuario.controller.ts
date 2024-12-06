@@ -28,6 +28,40 @@ function sanitizedUsuarioInput(req: Request, res: Response, next: NextFunction) 
   next();
 }
 
+async function findEntradasByUsuario(req: Request, res: Response) {
+  try {
+    const usuarioId = Number.parseInt(req.params.id);
+
+    // Aseguramos que el ID del usuario sea válido
+    if (isNaN(usuarioId)) {
+      return res.status(400).json({ message: 'ID de usuario inválido' });
+    }
+
+    // Buscar el usuario por su ID y cargar las entradas con populate
+    const usuario = await em.findOneOrFail(
+      Usuario,
+      { id: usuarioId },
+      { populate: ['entradas'] }  // Asegúrate de que 'entradas' esté correctamente poblado
+    );
+
+    // Si no hay entradas, se maneja aquí
+    if (usuario.entradas.isEmpty()) {
+      return res.status(200).json({
+        message: 'No se encontraron entradas para este usuario.',
+        data: [],
+      });
+    }
+
+    // Devolver las entradas
+    res.status(200).json({
+      message: 'Entradas del usuario encontradas',
+      data: usuario.entradas.getItems(), // Usamos getItems() para convertir la colección en un array
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener las entradas del usuario' });
+  }
+}
 
 
 async function register(req:Request, res:Response) {
@@ -92,7 +126,7 @@ async function login(req: Request, res: Response) {
     console.log('contraseña valida')
     res.status(200).json({
       message: 'Login exitoso',
-      usuario: { DNI: usuario.DNI, nickname: usuario.nickname, mail: usuario.mail,},
+      usuario: { DNI: usuario.DNI, nickname: usuario.nickname, mail: usuario.mail, id:usuario.id},
       token: "JWT_TOKEN", // Si usas un token JWT
     });
   } catch (error) {
@@ -183,4 +217,4 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizedUsuarioInput, findAll, findOne, add, update, remove, login, register };
+export { sanitizedUsuarioInput, findAll, findOne, add, update, remove, login, register, findEntradasByUsuario };

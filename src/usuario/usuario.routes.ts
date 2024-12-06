@@ -8,6 +8,7 @@ import {
   remove,
   login,
   register,
+  findEntradasByUsuario,
 } from './usuario.controller.js';
 
 export const usuarioRouter = Router();
@@ -20,3 +21,4 @@ usuarioRouter.put('/update/:id', sanitizedUsuarioInput, update);
 usuarioRouter.delete('/:id', remove);
 usuarioRouter.post('/login', login);
 usuarioRouter.post('/register', register);
+usuarioRouter.get('/:id/entradas', findEntradasByUsuario);  // Aquí se obtiene las entradas por el id del usuario
