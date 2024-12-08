@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express'
-import { Evento } from './evento.entity.js'
-import { orm } from '../shared/db/orm.js'
+import { Request, Response, NextFunction } from 'express';
+import { Evento } from './evento.entity.js';
+import { orm } from '../shared/db/orm.js';
 
-const em = orm.em
+const em = orm.em;
 
 function sanitizedEventoInput(req: Request, res: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -37,28 +37,35 @@ async function findAll(req: Request, res: Response) {
     const eventos = await em.find(
       Evento,
       {},
-      { populate: ['entradas', 'tiposEntrada',  'usuarios'] }
-    )
-    res.status(200).json({ message: 'found all events', data: eventos })
+      { populate: ['entradas', 'tiposEntrada', 'usuarios', 'eventoCategoria'] }
+    );
+    res.status(200).json({ message: 'found all events', data: eventos });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 
 async function findOne(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
+    const id = Number.parseInt(req.params.id);
     const evento = await em.findOneOrFail(
       Evento,
       { id },
-      { populate: ['entradas', 'tiposEntrada', 'organizador', 'usuarios'] }
-    )
-    res.status(200).json({ message: 'found evento', data: evento })
+      {
+        populate: [
+          'entradas',
+          'tiposEntrada',
+          'organizador',
+          'usuarios',
+          'eventoCategoria',
+        ],
+      }
+    );
+    res.status(200).json({ message: 'found evento', data: evento });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
-
 
 async function add(req: Request, res: Response) {
   try {
@@ -94,30 +101,26 @@ async function add(req: Request, res: Response) {
   }
 }
 
-
 async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const eventoToUpdate = await em.findOneOrFail(Evento, { id })
-    em.assign(eventoToUpdate, req.body.sanitizedInput)
-    await em.flush()
-    res
-      .status(200)
-      .json({ message: 'evento updated', data: eventoToUpdate })
+    const id = Number.parseInt(req.params.id);
+    const eventoToUpdate = await em.findOneOrFail(Evento, { id });
+    em.assign(eventoToUpdate, req.body.sanitizedInput);
+    await em.flush();
+    res.status(200).json({ message: 'evento updated', data: eventoToUpdate });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
-
 
 async function remove(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id)
-    const evento = em.getReference(Evento, id)
-    await em.removeAndFlush(evento)
+    const id = Number.parseInt(req.params.id);
+    const evento = em.getReference(Evento, id);
+    await em.removeAndFlush(evento);
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
 
-export { sanitizedEventoInput, findAll, findOne, add, update, remove }
+export { sanitizedEventoInput, findAll, findOne, add, update, remove };
