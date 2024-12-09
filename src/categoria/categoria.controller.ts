@@ -29,14 +29,18 @@ async function findAll(req: Request, res: Response) {
   try {
     const categorias = await em.find(
       Categoria,
-      {},
-      { populate: ['eventos','usuariosSeguidos'] }
-    )
-    res.status(200).json({ message: 'found all categorias', data: categorias })
+      {}, // No hay condiciones específicas
+      {
+        populate: ['eventos', 'usuariosSeguidos'],
+        orderBy: { name: 'asc' }, // Cambia "nombre" por el campo que representa el nombre de la categoría
+      }
+    );
+    res.status(200).json({ message: 'found all categorias', data: categorias });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
 }
+
 
 async function findOne(req: Request, res: Response) {
   try {

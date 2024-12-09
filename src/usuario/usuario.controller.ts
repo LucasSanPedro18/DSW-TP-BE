@@ -140,8 +140,9 @@ async function login(req: Request, res: Response) {
         nickname: usuario.nickname,
         mail: usuario.mail,
         id: usuario.id,
+        description: usuario.description, // Asegúrate de que esto esté definido
       },
-      token: 'JWT_TOKEN', // Si usas un token JWT
+      token: 'JWT_TOKEN',
     });
   } catch (error) {
     res.status(500).json({ message: (error as Error).message });

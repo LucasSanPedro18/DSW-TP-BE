@@ -116,11 +116,21 @@ async function update(req: Request, res: Response) {
 async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
+
+    // Referencia al evento a eliminar
     const evento = em.getReference(Evento, id);
+
+    // Elimina el evento de la base de datos
     await em.removeAndFlush(evento);
+
+    // Envía una respuesta exitosa
+    res.status(200).json({ message: 'Evento eliminado exitosamente.' });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    // Manejo de errores
+    console.error('Error al eliminar el evento:', error);
+    res.status(500).json({ message: 'Error al eliminar el evento.', error: error.message });
   }
 }
+
 
 export { sanitizedEventoInput, findAll, findOne, add, update, remove };

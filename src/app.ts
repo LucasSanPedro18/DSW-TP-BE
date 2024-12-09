@@ -15,13 +15,12 @@ import jwt from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Configuración para ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Sirve archivos estáticos desde la carpeta 'uploads'
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -32,12 +31,15 @@ app.use(
   cors({
     origin: 'http://localhost:3000',
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'], // Asegurarse de que las cabeceras correctas están permitidas
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
-);
+);  
 
 // Creación del contexto para la base de datos
 app.use((req, res, next) => {
   RequestContext.create(orm.em, next);
+  
 });
 
 // Rutas de la API

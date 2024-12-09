@@ -97,6 +97,7 @@ async function login(req: Request, res: Response) {
         nickname: organizador.nickname,
         mail: organizador.mail,
         id: organizador.id, // Asegúrate de incluir el id aquí
+        description: organizador.description,
       },
       token: token, // Aquí debes enviar el token generado
     });
