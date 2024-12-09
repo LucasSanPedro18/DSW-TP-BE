@@ -6,14 +6,18 @@ import jwt from 'jsonwebtoken';
 
 const em = orm.em;
 
-function sanitizedOrganizadorInput(req: Request, res: Response, next: NextFunction) {
+function sanitizedOrganizadorInput(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   req.body.sanitizedInput = {
     CUIT: req.body.CUIT,
     nickname: req.body.nickname,
     password: req.body.password,
     mail: req.body.mail,
     description: req.body.description,
-    photo: req.body.photo, 
+    photo: req.body.photo,
   };
   //more checks here
 
@@ -24,8 +28,6 @@ function sanitizedOrganizadorInput(req: Request, res: Response, next: NextFuncti
   });
   next();
 }
-
-
 
 async function findEventosByOrganizador(req: Request, res: Response) {
   try {
@@ -40,7 +42,7 @@ async function findEventosByOrganizador(req: Request, res: Response) {
     const organizador = await em.findOneOrFail(
       Organizador,
       { id: organizadorId },
-      { populate: ['eventos'] }  // Asegúrate de que 'eventos' esté correctamente poblado
+      { populate: ['eventos'] } // Asegúrate de que 'eventos' esté correctamente poblado
     );
 
     // Si no hay eventos, se maneja aquí
@@ -58,14 +60,15 @@ async function findEventosByOrganizador(req: Request, res: Response) {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error al obtener los eventos del organizador' });
+    res
+      .status(500)
+      .json({ message: 'Error al obtener los eventos del organizador' });
   }
 }
 
-
 async function login(req: Request, res: Response) {
   const { mail, password } = req.body;
-  console.log('Datos recibidos:', { mail, password });  // Asegúrate de que los datos están llegando correctamente
+  console.log('Datos recibidos:', { mail, password }); // Asegúrate de que los datos están llegando correctamente
 
   try {
     const organizador = await em.findOne(Organizador, { mail });
@@ -83,7 +86,9 @@ async function login(req: Request, res: Response) {
     console.log('Contraseña válida');
 
     // Generar el token JWT
-    const token = jwt.sign({ userId: organizador.id }, 'secreto', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: organizador.id }, 'secreto', {
+      expiresIn: '1h',
+    });
 
     return res.status(200).json({
       message: 'Login exitoso',
@@ -91,17 +96,14 @@ async function login(req: Request, res: Response) {
         CUIT: organizador.CUIT,
         nickname: organizador.nickname,
         mail: organizador.mail,
-        id: organizador.id,  // Asegúrate de incluir el id aquí
-
+        id: organizador.id, // Asegúrate de incluir el id aquí
       },
-      token: token,  // Aquí debes enviar el token generado
+      token: token, // Aquí debes enviar el token generado
     });
   } catch (error) {
     return res.status(500).json({ message: (error as Error).message });
   }
 }
-
-
 
 async function register(req: Request, res: Response) {
   const { nickname, mail, password, CUIT, description } = req.body;
@@ -116,26 +118,30 @@ async function register(req: Request, res: Response) {
     // Verificar si el correo electrónico ya está registrado
     const existingMail = await em.findOne(Organizador, { mail });
     if (existingMail) {
-      return res.status(400).json({ message: 'El correo electrónico ya está registrado' });
+      return res
+        .status(400)
+        .json({ message: 'El correo electrónico ya está registrado' });
     }
 
     // Verificar si el nickname ya está registrado
     const existingNickname = await em.findOne(Organizador, { nickname });
     if (existingNickname) {
-      return res.status(400).json({ message: 'El nickname ya está registrado' });
+      return res
+        .status(400)
+        .json({ message: 'El nickname ya está registrado' });
     }
 
     // Si todo está bien, crear el nuevo organizador
-    const newOrganizador = em.create(Organizador, { 
-      nickname, 
-      mail, 
-      password, 
-      CUIT, 
-      description, 
-      createdAt: new Date(), 
-      updatedAt: new Date() 
+    const newOrganizador = em.create(Organizador, {
+      nickname,
+      mail,
+      password,
+      CUIT,
+      description,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
-    
+
     // Guardar el organizador en la base de datos
     await em.persistAndFlush(newOrganizador);
 
@@ -149,7 +155,6 @@ async function register(req: Request, res: Response) {
   }
 }
 
-
 async function findAll(req: Request, res: Response) {
   try {
     const organizadores = await em.find(
@@ -157,7 +162,9 @@ async function findAll(req: Request, res: Response) {
       {},
       { populate: ['eventos'] }
     );
-    res.status(200).json({ message: 'found all organizadores', data: organizadores });
+    res
+      .status(200)
+      .json({ message: 'found all organizadores', data: organizadores });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
@@ -189,44 +196,14 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    
-    
-    const CUIT = Number.parseInt(req.params.CUIT);  // Se asume que el CUIT es un parámetro en la URL
-    
-  // Verificar si el CUIT es válido
-      if (isNaN(CUIT)) {
-        return res.status(400).json({ message: 'CUIT inválido' });
-      }
-
-    // Extraer el token de los headers
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ message: 'Token de autenticación requerido' });
-    }
-
-    // Verificar el token con la clave secreta
-    const decoded = jwt.verify(token, 'secreto');  // Cambia 'secreto' por tu clave secreta
-    if (!decoded) {
-      return res.status(401).json({ message: 'Token inválido' });
-    }
-
-    const CUITprueba = req.params.CUIT;
-    console.log('CUIT recibido:', CUITprueba);  // Asegúrate de que el CUIT está llegando correctamente
-
-
-    // Buscar el organizador que se desea actualizar
-    const organizadorToUpdate = await em.findOneOrFail(Organizador, { CUIT });
-
-    // Asignar los nuevos datos del cuerpo de la solicitud a la entidad organizador
+    const id = Number.parseInt(req.params.id);
+    const organizadorToUpdate = await em.findOneOrFail(Organizador, { id });
     em.assign(organizadorToUpdate, req.body.sanitizedInput);
-
-    // Guardar los cambios en la base de datos
     await em.flush();
-
-    // Responder con los datos del organizador actualizado
-    res.status(200).json({ message: 'Organizador actualizado correctamente', data: organizadorToUpdate });
+    res
+      .status(200)
+      .json({ message: 'evento updated', data: organizadorToUpdate });
   } catch (error: any) {
-    // Si ocurre un error, responder con el mensaje
     res.status(500).json({ message: error.message });
   }
 }
@@ -241,4 +218,14 @@ async function remove(req: Request, res: Response) {
   }
 }
 
-export { sanitizedOrganizadorInput, findAll, findOne, add, update, remove, login, register, findEventosByOrganizador };
+export {
+  sanitizedOrganizadorInput,
+  findAll,
+  findOne,
+  add,
+  update,
+  remove,
+  login,
+  register,
+  findEventosByOrganizador,
+};
