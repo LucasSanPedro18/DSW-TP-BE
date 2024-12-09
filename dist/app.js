@@ -17,7 +17,10 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // Sirve archivos estáticos desde la carpeta 'uploads'
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', (req, res, next) => {
+    console.log(`Intentando servir: ${path.join(__dirname, 'uploads', req.path)}`);
+    next();
+}, express.static(path.join(__dirname, 'uploads')));
 app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true,

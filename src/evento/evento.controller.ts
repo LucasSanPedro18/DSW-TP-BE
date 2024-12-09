@@ -77,9 +77,10 @@ async function add(req: Request, res: Response) {
 
     // Verifica si se subió un archivo de imagen
     if (req.file) {
-      // Guarda la ruta del archivo en el campo `photo`
-      eventoData.photo = req.file.path.replace(/\\/g, '/'); // Normaliza la ruta para sistemas Windows
+    // Normaliza la ruta para sistemas Windows y elimina 'dist/' del inicio
+    eventoData.photo = req.file.path.replace(/\\/g, '/').replace('dist/', '');
     }
+
 
     // Crear el evento con los datos recibidos
     const evento = em.create(Evento, eventoData);
