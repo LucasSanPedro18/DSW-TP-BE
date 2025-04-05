@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import { Entrada } from './entrada.entity.js'
 import { orm } from '../shared/db/orm.js'
+import { Usuario } from '../usuario/usuario.entity.js';
+import { Evento } from '../evento/evento.entity.js';
+import { TipoEntrada } from '../tipoEntrada/tipoEntrada.entity.js';
 
 const em = orm.em
 
@@ -58,13 +61,37 @@ async function findOne(req: Request, res: Response) {
 
 async function add(req: Request, res: Response) {
   try {
-    const entrada = em.create(Entrada, req.body.sanitizedInput)
-    await em.flush()
-    res.status(201).json({ message: 'entrada created', data: entrada })
+    const { usuario, evento, tipoEntrada, ...rest } = req.body.sanitizedInput;
+
+    // ⚠️ Verificar si ya existe una entrada para ese usuario y evento
+    const entradaExistente = await em.findOne(Entrada, {
+      usuario: usuario,
+      evento: evento,
+    });
+
+    if (entradaExistente) {
+      return res.status(409).json({
+        message: 'El usuario ya tiene una entrada para este evento',
+      });
+    }
+
+    const entrada = em.create(Entrada, {
+      ...rest,
+      usuario: em.getReference(Usuario, usuario),
+      evento: em.getReference(Evento, evento),
+      tipoEntrada: em.getReference(TipoEntrada, tipoEntrada),
+    });
+
+    await em.flush();
+    res.status(201).json({ message: 'Entrada creada', data: entrada });
   } catch (error: any) {
-    res.status(500).json({ message: error.message })
+    console.error('Error al crear entrada:', error);
+    res.status(500).json({ message: error.message });
   }
 }
+
+
+
 
 async function update(req: Request, res: Response) {
   try {

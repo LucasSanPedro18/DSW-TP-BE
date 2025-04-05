@@ -1,30 +1,26 @@
-import { Entity, Property, DateTimeType, ManyToOne, Rel, PrimaryKey } from "@mikro-orm/core";
+import { Entity, Property, DateTimeType, ManyToOne, Rel } from "@mikro-orm/core";
 import { BaseEntity } from "../shared/db/baseEntity.entity.js";
 import { TipoEntrada } from "../tipoEntrada/tipoEntrada.entity.js";
 import { Usuario } from "../usuario/usuario.entity.js";
 import { Evento } from "../evento/evento.entity.js";
 
 @Entity()
-export class Entrada extends BaseEntity{
+export class Entrada extends BaseEntity {
 
-  @PrimaryKey()
-  code!: number;
+  // ❌ Eliminamos `@PrimaryKey() code`, ya lo maneja BaseEntity con `id`
 
-  @Property({nullable: false, type: DateTimeType })
+  @Property({ nullable: false, type: DateTimeType })
   date? = new Date();
 
-  @Property({nullable: false})
-  status!: string; // comprada, asistido, cancelado
-  
-  /*@Property({nullable: true})
-  rating?: number;*/
+  @Property({ nullable: false })
+  status!: string;
 
-  @ManyToOne(() => TipoEntrada, {nullable: false})
+  @ManyToOne(() => TipoEntrada, { nullable: false })
   tipoEntrada!: Rel<TipoEntrada>;
 
-  @ManyToOne(() => Usuario, {nullable: false})
+  @ManyToOne(() => Usuario, { nullable: false })
   usuario!: Rel<Usuario>;
 
-  @ManyToOne(() => Evento, {nullable: false})
+  @ManyToOne(() => Evento, { nullable: false })
   evento!: Rel<Evento>;
 }
