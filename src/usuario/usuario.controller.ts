@@ -3,8 +3,10 @@ import { Usuario } from './usuario.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { validationResult } from 'express-validator';
 
 const em = orm.em;
+const JWT_SECRET = process.env.JWT_SECRET || 'tu-clave-secreta-temporal'; // En producción, usar variables de entorno
 
 function sanitizedUsuarioInput(
   req: Request,
@@ -73,6 +75,13 @@ async function register(req: Request, res: Response) {
   const { nickname, mail, password, DNI, description } = req.body;
 
   try {
+    // Validar la fortaleza de la contraseña
+    if (password.length < 8) {
+      return res.status(400).json({ 
+        message: 'La contraseña debe tener al menos 8 caracteres' 
+      });
+    }
+
     // Verificar si el DNI ya está registrado
     const existingDNI = await em.findOne(Usuario, { DNI });
     if (existingDNI) {
@@ -82,24 +91,28 @@ async function register(req: Request, res: Response) {
     // Verificar si el correo electrónico ya está registrado
     const existingMail = await em.findOne(Usuario, { mail });
     if (existingMail) {
-      return res
-        .status(400)
-        .json({ message: 'El correo electrónico ya está registrado' });
+      return res.status(400).json({ 
+        message: 'El correo electrónico ya está registrado' 
+      });
     }
 
     // Verificar si el nickname ya está registrado
     const existingNickname = await em.findOne(Usuario, { nickname });
     if (existingNickname) {
-      return res
-        .status(400)
-        .json({ message: 'El nickname ya está registrado' });
+      return res.status(400).json({ 
+        message: 'El nickname ya está registrado' 
+      });
     }
 
-    // Si todo está bien, crear el nuevo usuario
+    // Hash de la contraseña
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Crear el nuevo usuario
     const newUser = em.create(Usuario, {
       nickname,
       mail,
-      password,
+      password: hashedPassword, // Guardar la contraseña hasheada
       DNI,
       description,
       createdAt: new Date(),
@@ -107,45 +120,81 @@ async function register(req: Request, res: Response) {
     });
     await em.persistAndFlush(newUser);
 
+    // Generar token JWT
+    const token = jwt.sign(
+      { userId: newUser.id, mail: newUser.mail },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Establecer cookie segura
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    });
+
     res.status(201).json({
       message: 'Usuario registrado exitosamente',
-      data: newUser,
+      usuario: {
+        id: newUser.id,
+        nickname: newUser.nickname,
+        mail: newUser.mail,
+        DNI: newUser.DNI,
+        description: newUser.description
+      }
     });
   } catch (error) {
+    console.error('Error en registro:', error);
     res.status(500).json({ message: 'Error al registrar el usuario' });
   }
 }
 
 async function login(req: Request, res: Response) {
   const { mail, password } = req.body;
-  console.log('Datos recibidos:', { mail, password }); // Verifica los datos recibidos
 
   try {
     const usuario = await em.findOne(Usuario, { mail });
 
     if (!usuario) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
-    const hashedPassword = await bcrypt.hash(usuario.password, 10);
-    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+    // Comparar la contraseña ingresada con la hasheada
+    const isPasswordValid = await bcrypt.compare(password, usuario.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Contraseña incorrecta' });
+      return res.status(401).json({ message: 'Credenciales inválidas' });
     }
-    console.log('contraseña valida');
+
+    // Generar token JWT
+    const token = jwt.sign(
+      { userId: usuario.id, mail: usuario.mail },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Establecer cookie segura
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    });
+
     res.status(200).json({
       message: 'Login exitoso',
       usuario: {
+        id: usuario.id,
         DNI: usuario.DNI,
         nickname: usuario.nickname,
         mail: usuario.mail,
-        id: usuario.id,
-        description: usuario.description, // Asegúrate de que esto esté definido
-      },
-      token: 'JWT_TOKEN',
+        description: usuario.description
+      }
     });
   } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
+    console.error('Error en login:', error);
+    res.status(500).json({ message: 'Error en el servidor' });
   }
 }
 
@@ -188,13 +237,46 @@ async function add(req: Request, res: Response) {
 
 async function update(req: Request, res: Response) {
   try {
-    const id = Number.parseInt(req.params.id);
-    const usuarioToUpdate = await em.findOneOrFail(Usuario, { id });
-    em.assign(usuarioToUpdate, req.body.sanitizedInput);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const userId = Number.parseInt(req.params.id);
+    const usuarioToUpdate = await em.findOneOrFail(Usuario, { id: userId });
+
+    // Verificar que el usuario autenticado es el mismo que se está actualizando
+    const authUser = req.user;
+    if (!authUser || authUser.userId !== userId) {
+      return res.status(403).json({ message: 'No tienes permiso para actualizar este usuario' });
+    }
+
+    const updateData = req.body;
+
+    // Si se está actualizando la contraseña, hashearla
+    if (updateData.password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(updateData.password, salt);
+    }
+
+    // Actualizar solo los campos proporcionados
+    em.assign(usuarioToUpdate, updateData);
     await em.flush();
-    res.status(200).json({ message: 'evento updated', data: usuarioToUpdate });
+
+    // No devolver la contraseña en la respuesta
+    const { password, ...usuarioSinPassword } = usuarioToUpdate;
+
+    res.status(200).json({
+      message: 'Usuario actualizado exitosamente',
+      usuario: usuarioSinPassword
+    });
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    console.error('Error al actualizar usuario:', error);
+    if (error.name === 'NotFoundError') {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+    } else {
+      res.status(500).json({ message: 'Error al actualizar el usuario' });
+    }
   }
 }
 
