@@ -7,10 +7,8 @@ import { Evento } from "../evento/evento.entity.js";
 @Entity()
 export class Entrada extends BaseEntity {
 
-  // ❌ Eliminamos `@PrimaryKey() code`, ya lo maneja BaseEntity con `id`
-
-  @Property({ nullable: false, type: DateTimeType })
-  date? = new Date();
+  @Property({ nullable: false, type: DateTimeType, onCreate: () => new Date() })
+  date: Date = new Date();
 
   @Property({ nullable: false })
   status!: string;

@@ -37,7 +37,7 @@ async function findAll(req: Request, res: Response) {
     const entradas = await em.find(
       Entrada,
       {},
-      { populate: ['tipoEntrada', 'usuario', 'evento'] }
+      { populate: ['tipoEntrada', 'usuario', 'evento', 'evento.eventoCategoria'] }
     )
     res.status(200).json({ message: 'found all entradas', data: entradas })
   } catch (error: any) {
@@ -51,7 +51,7 @@ async function findOne(req: Request, res: Response) {
     const entrada = await em.findOneOrFail(
       Entrada,
       { id },
-      { populate: ['tipoEntrada', 'usuario', 'evento'] }
+      { populate: ['tipoEntrada', 'usuario', 'evento', 'evento.eventoCategoria'] }
     )
     res.status(200).json({ message: 'found entrada', data: entrada })
   } catch (error: any) {
@@ -63,10 +63,10 @@ async function add(req: Request, res: Response) {
   try {
     const { usuario, evento, tipoEntrada, ...rest } = req.body.sanitizedInput;
 
-    // ⚠️ Verificar si ya existe una entrada para ese usuario y evento
+    // Verifica si ya existe una entrada para ese usuario y evento
     const entradaExistente = await em.findOne(Entrada, {
-      usuario: usuario,
-      evento: evento,
+      usuario,
+      evento,
     });
 
     if (entradaExistente) {
@@ -75,10 +75,15 @@ async function add(req: Request, res: Response) {
       });
     }
 
+    // 🟡 Carga el evento para obtener su referencia
+    const eventoEntity = await em.findOneOrFail(Evento, { id: evento });
+
     const entrada = em.create(Entrada, {
       ...rest,
+      // No asignamos date aquí porque la entidad ya tiene el valor por defecto new Date()
+      // que representa la fecha de creación/compra de la entrada
       usuario: em.getReference(Usuario, usuario),
-      evento: em.getReference(Evento, evento),
+      evento: eventoEntity,
       tipoEntrada: em.getReference(TipoEntrada, tipoEntrada),
     });
 
@@ -89,7 +94,6 @@ async function add(req: Request, res: Response) {
     res.status(500).json({ message: error.message });
   }
 }
-
 
 
 

@@ -41,11 +41,11 @@ async function findEntradasByUsuario(req: Request, res: Response) {
       return res.status(400).json({ message: 'ID de usuario inválido' });
     }
 
-    // Buscar el usuario por su ID y cargar las entradas con populate
+    // Buscar el usuario por su ID y cargar las entradas con populate completo
     const usuario = await em.findOneOrFail(
       Usuario,
       { id: usuarioId },
-      { populate: ['entradas'] } // Asegúrate de que 'entradas' esté correctamente poblado
+      { populate: ['entradas', 'entradas.evento', 'entradas.evento.eventoCategoria', 'entradas.tipoEntrada'] }
     );
 
     // Si no hay entradas, se maneja aquí
