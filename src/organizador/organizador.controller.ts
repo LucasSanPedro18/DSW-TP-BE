@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Organizador } from './organizador.entity.js';
+import { Evento } from '../evento/evento.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -38,15 +39,23 @@ async function findEventosByOrganizador(req: Request, res: Response) {
       return res.status(400).json({ message: 'ID de organizador inválido' });
     }
 
-    // Buscar el organizador por su ID y cargar los eventos con populate
-    const organizador = await em.findOneOrFail(
-      Organizador,
-      { id: organizadorId },
-      { populate: ['eventos'] } // Asegúrate de que 'eventos' esté correctamente poblado
+    // Buscar los eventos del organizador directamente con todas las relaciones pobladas
+    const eventos = await em.find(
+      Evento,
+      { organizador: organizadorId },
+      { 
+        populate: [
+          'entradas', 
+          'tiposEntrada', 
+          'usuarios', 
+          'eventoCategoria',
+          'organizador'
+        ] 
+      }
     );
 
     // Si no hay eventos, se maneja aquí
-    if (organizador.eventos.isEmpty()) {
+    if (eventos.length === 0) {
       return res.status(200).json({
         message: 'No se encontraron eventos para este organizador.',
         data: [],
@@ -56,7 +65,7 @@ async function findEventosByOrganizador(req: Request, res: Response) {
     // Devolver los eventos
     res.status(200).json({
       message: 'Eventos del organizador encontrados',
-      data: organizador.eventos.getItems(), // Usamos getItems() para convertir la colección en un array
+      data: eventos,
     });
   } catch (error) {
     console.error(error);
@@ -173,10 +182,10 @@ async function findAll(req: Request, res: Response) {
 
 async function findOne(req: Request, res: Response) {
   try {
-    const CUIT = Number.parseInt(req.params.CUIT);
+    const id = Number.parseInt(req.params.id);
     const organizador = await em.findOneOrFail(
       Organizador,
-      { CUIT },
+      { id },
       { populate: ['eventos'] }
     );
     res.status(200).json({ message: 'found Organizador', data: organizador });
@@ -211,8 +220,8 @@ async function update(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   try {
-    const CUIT = Number.parseInt(req.params.CUIT);
-    const organizador = em.getReference(Organizador, CUIT);
+    const id = Number.parseInt(req.params.id);
+    const organizador = em.getReference(Organizador, id);
     await em.removeAndFlush(organizador);
   } catch (error: any) {
     res.status(500).json({ message: error.message });

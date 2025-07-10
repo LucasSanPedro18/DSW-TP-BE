@@ -20,7 +20,11 @@ function sanitizedEventoInput(req: Request, res: Response, next: NextFunction) {
 
   // Si el archivo fue cargado, añade la ruta del archivo a los datos
   if (req.file) {
-    req.body.sanitizedInput.photo = req.file.path;
+    // Normalizar la ruta para que sea consistente con la configuración del servidor
+    // req.file.path será algo como "dist/uploads/filename.jpg"
+    // pero necesitamos guardar "uploads/filename.jpg"
+    const normalizedPath = req.file.path.replace(/^dist\//, '');
+    req.body.sanitizedInput.photo = normalizedPath;
   }
 
   // Elimina los valores `undefined`
@@ -37,7 +41,7 @@ async function findAll(req: Request, res: Response) {
     const eventos = await em.find(
       Evento,
       {},
-      { populate: ['entradas', 'tiposEntrada', 'usuarios', 'eventoCategoria'] }
+      { populate: ['entradas', 'tiposEntrada', 'usuarios', 'eventoCategoria', 'organizador'] }
     );
     res.status(200).json({ message: 'found all events', data: eventos });
   } catch (error: any) {

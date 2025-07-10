@@ -10,9 +10,9 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 
 @Entity()
 export class Organizador extends BaseEntity {
-  // CUIT debe ser un número entero (si es largo, usar bigint)
+  // CUIT como string para manejar guiones y evitar problemas de rango
   @Property({ nullable: false, unique: true })
-  CUIT!: number;
+  CUIT!: string;
 
   @OneToMany(() => Evento, (evento) => evento.organizador, {
     cascade: [Cascade.ALL], // Permite que los eventos se gestionen junto con el organizador
