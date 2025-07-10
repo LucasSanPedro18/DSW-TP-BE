@@ -6,6 +6,16 @@ import jwt from 'jsonwebtoken';
 
 const em = orm.em;
 
+// Helper para calcular el estado de la entrada
+function calcularEstadoEntrada(fechaEvento: Date | undefined): string {
+  if (!fechaEvento) return 'Expirada'; // Si no hay fecha, se considera expirada
+  
+  const ahora = new Date();
+  const fechaEventoDate = new Date(fechaEvento);
+  
+  return fechaEventoDate > ahora ? 'Activa' : 'Expirada';
+}
+
 function sanitizedUsuarioInput(
   req: Request,
   res: Response,
@@ -45,7 +55,15 @@ async function findEntradasByUsuario(req: Request, res: Response) {
     const usuario = await em.findOneOrFail(
       Usuario,
       { id: usuarioId },
-      { populate: ['entradas', 'entradas.evento', 'entradas.evento.eventoCategoria', 'entradas.tipoEntrada'] }
+      { 
+        populate: [
+          'entradas', 
+          'entradas.evento', 
+          'entradas.evento.eventoCategoria', 
+          'entradas.evento.organizador', 
+          'entradas.tipoEntrada'
+        ] 
+      }
     );
 
     // Si no hay entradas, se maneja aquí
@@ -56,10 +74,16 @@ async function findEntradasByUsuario(req: Request, res: Response) {
       });
     }
 
-    // Devolver las entradas
+    // Agregar estado calculado a cada entrada
+    const entradasConEstado = usuario.entradas.getItems().map(entrada => ({
+      ...entrada,
+      estadoCalculado: calcularEstadoEntrada(entrada.evento.date)
+    }));
+
+    // Devolver las entradas con estado
     res.status(200).json({
       message: 'Entradas del usuario encontradas',
-      data: usuario.entradas.getItems(), // Usamos getItems() para convertir la colección en un array
+      data: entradasConEstado
     });
   } catch (error) {
     console.error(error);
@@ -218,4 +242,5 @@ export {
   login,
   register,
   findEntradasByUsuario,
+  calcularEstadoEntrada,
 };
