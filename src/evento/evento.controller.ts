@@ -122,14 +122,23 @@ async function remove(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
 
-    // Referencia al evento a eliminar
-    const evento = em.getReference(Evento, id);
+    // Buscar el evento completo con sus entradas para asegurar la eliminación en cascada
+    const evento = await em.findOneOrFail(
+      Evento, 
+      { id }, 
+      { populate: ['entradas', 'tiposEntrada'] }
+    );
 
-    // Elimina el evento de la base de datos
+    console.log(`🗑️ Eliminando evento "${evento.name}" con ${evento.entradas.length} entradas asociadas`);
+
+    // Elimina el evento de la base de datos (las entradas se eliminarán automáticamente por la cascada)
     await em.removeAndFlush(evento);
 
     // Envía una respuesta exitosa
-    res.status(200).json({ message: 'Evento eliminado exitosamente.' });
+    res.status(200).json({ 
+      message: 'Evento eliminado exitosamente junto con sus entradas asociadas.',
+      deletedEntries: evento.entradas.length
+    });
   } catch (error: any) {
     // Manejo de errores
     console.error('Error al eliminar el evento:', error);

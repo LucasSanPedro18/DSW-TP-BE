@@ -7,8 +7,8 @@ import { Evento } from "../evento/evento.entity.js";
 @Entity()
 export class Entrada extends BaseEntity {
 
-  @Property({ nullable: false, type: DateTimeType, onCreate: () => new Date() })
-  date: Date = new Date();
+  @Property({ nullable: false, type: DateTimeType })
+  date? = new Date();
 
   @Property({ nullable: false })
   status!: string;
