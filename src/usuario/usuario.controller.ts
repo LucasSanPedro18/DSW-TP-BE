@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { Usuario } from './usuario.entity.js';
+import { Categoria } from '../categoria/categoria.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
@@ -232,6 +233,94 @@ async function remove(req: Request, res: Response) {
   }
 }
 
+async function followCategoria(req: Request, res: Response) {
+  try {
+    const usuarioId = Number.parseInt(req.params.id);
+    const categoriaId = Number.parseInt(req.body.categoriaId);
+
+    // Buscar el usuario con sus categorías seguidas
+    const usuario = await em.findOneOrFail(
+      Usuario,
+      { id: usuarioId },
+      { populate: ['categoriasSeguidas'] }
+    );
+
+    // Buscar la categoría
+    const categoria = await em.findOneOrFail(Categoria, { id: categoriaId });
+
+    // Verificar si ya la sigue
+    const yaLaSigue = usuario.categoriasSeguidas.contains(categoria);
+    if (yaLaSigue) {
+      return res.status(400).json({ message: 'Ya sigues esta categoría' });
+    }
+
+    // Agregar la categoría a las seguidas
+    usuario.categoriasSeguidas.add(categoria);
+    await em.flush();
+
+    res.status(200).json({
+      message: 'Categoría seguida exitosamente',
+      data: categoria
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function unfollowCategoria(req: Request, res: Response) {
+  try {
+    const usuarioId = Number.parseInt(req.params.id);
+    const categoriaId = Number.parseInt(req.body.categoriaId);
+
+    // Buscar el usuario con sus categorías seguidas
+    const usuario = await em.findOneOrFail(
+      Usuario,
+      { id: usuarioId },
+      { populate: ['categoriasSeguidas'] }
+    );
+
+    // Buscar la categoría
+    const categoria = await em.findOneOrFail(Categoria, { id: categoriaId });
+
+    // Verificar si la sigue
+    const laSigue = usuario.categoriasSeguidas.contains(categoria);
+    if (!laSigue) {
+      return res.status(400).json({ message: 'No sigues esta categoría' });
+    }
+
+    // Remover la categoría de las seguidas
+    usuario.categoriasSeguidas.remove(categoria);
+    await em.flush();
+
+    res.status(200).json({
+      message: 'Dejaste de seguir la categoría exitosamente',
+      data: categoria
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+async function getCategoriasSeguidas(req: Request, res: Response) {
+  try {
+    const usuarioId = Number.parseInt(req.params.id);
+
+    // Buscar el usuario con sus categorías seguidas
+    const usuario = await em.findOneOrFail(
+      Usuario,
+      { id: usuarioId },
+      { populate: ['categoriasSeguidas'] }
+    );
+
+    res.status(200).json({
+      message: 'Categorías seguidas obtenidas exitosamente',
+      data: usuario.categoriasSeguidas.getItems()
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
 export {
   sanitizedUsuarioInput,
   findAll,
@@ -243,4 +332,7 @@ export {
   register,
   findEntradasByUsuario,
   calcularEstadoEntrada,
+  followCategoria,
+  unfollowCategoria,
+  getCategoriasSeguidas,
 };

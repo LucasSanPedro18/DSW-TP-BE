@@ -9,6 +9,9 @@ import {
   login,
   register,
   findEntradasByUsuario,
+  followCategoria,
+  unfollowCategoria,
+  getCategoriasSeguidas,
 } from './usuario.controller.js';
 
 export const usuarioRouter = Router();
@@ -22,3 +25,6 @@ usuarioRouter.delete('/:id', remove);
 usuarioRouter.post('/login', login);
 usuarioRouter.post('/register', register);
 usuarioRouter.get('/:id/entradas', findEntradasByUsuario);  // Aquí se obtiene las entradas por el id del usuario
+usuarioRouter.post('/:id/follow-categoria', followCategoria);  // Seguir una categoría
+usuarioRouter.post('/:id/unfollow-categoria', unfollowCategoria);  // Dejar de seguir una categoría
+usuarioRouter.get('/:id/categorias-seguidas', getCategoriasSeguidas);  // Obtener categorías seguidas
