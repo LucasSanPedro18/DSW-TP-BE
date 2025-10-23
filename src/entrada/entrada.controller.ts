@@ -105,6 +105,7 @@ async function add(req: Request, res: Response) {
     const entrada = em.create(Entrada, {
       ...rest,
       date: eventoEntity.date, // ✅ Asignar fecha del evento
+      fechaCompra: new Date(), // Guardar fecha de compra
       usuario: em.getReference(Usuario, usuario),
       evento: eventoEntity,
       tipoEntrada: em.getReference(TipoEntrada, tipoEntrada),

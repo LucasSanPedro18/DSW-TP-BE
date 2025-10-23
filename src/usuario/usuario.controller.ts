@@ -3,9 +3,14 @@ import { Usuario } from './usuario.entity.js';
 import { Categoria } from '../categoria/categoria.entity.js';
 import { orm } from '../shared/db/orm.js';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 const em = orm.em;
+const SALT_ROUNDS = 10;
+
+// Función auxiliar para hashear contraseña
+async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, SALT_ROUNDS);
+}
 
 // Helper para calcular el estado de la entrada
 function calcularEstadoEntrada(fechaEvento: Date | undefined): string {
@@ -75,13 +80,14 @@ async function findEntradasByUsuario(req: Request, res: Response) {
       });
     }
 
-    // Agregar estado calculado a cada entrada
+    // Agregar estado calculado y mostrar createdAt como fecha de compra
     const entradasConEstado = usuario.entradas.getItems().map(entrada => ({
       ...entrada,
+      fechaCompra: entrada.createdAt, // Usar createdAt como fecha de compra
       estadoCalculado: calcularEstadoEntrada(entrada.evento.date)
     }));
 
-    // Devolver las entradas con estado
+    // Devolver las entradas con estado y fecha de compra
     res.status(200).json({
       message: 'Entradas del usuario encontradas',
       data: entradasConEstado
@@ -120,11 +126,14 @@ async function register(req: Request, res: Response) {
         .json({ message: 'El nickname ya está registrado' });
     }
 
+    // Hashear la contraseña antes de guardarla
+    const hashedPassword = await hashPassword(password);
+
     // Si todo está bien, crear el nuevo usuario
     const newUser = em.create(Usuario, {
       nickname,
       mail,
-      password,
+      password: hashedPassword,
       DNI,
       description,
       createdAt: new Date(),
@@ -134,7 +143,10 @@ async function register(req: Request, res: Response) {
 
     res.status(201).json({
       message: 'Usuario registrado exitosamente',
-      data: newUser,
+      data: {
+        ...newUser,
+        password: undefined // No devolver la contraseña hasheada
+      }
     });
   } catch (error) {
     res.status(500).json({ message: 'Error al registrar el usuario' });
@@ -143,7 +155,6 @@ async function register(req: Request, res: Response) {
 
 async function login(req: Request, res: Response) {
   const { mail, password } = req.body;
-  console.log('Datos recibidos:', { mail, password }); // Verifica los datos recibidos
 
   try {
     const usuario = await em.findOne(Usuario, { mail });
@@ -152,25 +163,24 @@ async function login(req: Request, res: Response) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    const hashedPassword = await bcrypt.hash(usuario.password, 10);
-    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+    const isPasswordValid = await bcrypt.compare(password, usuario.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
-    console.log('contraseña valida');
+
     res.status(200).json({
       message: 'Login exitoso',
       usuario: {
         DNI: usuario.DNI,
         nickname: usuario.nickname,
         mail: usuario.mail,
-        id: usuario.id,
-        description: usuario.description, // Asegúrate de que esto esté definido
-      },
-      token: 'JWT_TOKEN',
+        description: usuario.description,
+        id: usuario.id
+      }
     });
   } catch (error) {
-    res.status(500).json({ message: (error as Error).message });
+    console.error('Error en login:', error);
+    res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 }
 

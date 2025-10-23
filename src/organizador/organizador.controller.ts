@@ -6,6 +6,12 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const em = orm.em;
+const SALT_ROUNDS = 10;
+
+// Función auxiliar para hashear contraseña
+async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, SALT_ROUNDS);
+}
 
 function sanitizedOrganizadorInput(
   req: Request,
@@ -77,7 +83,6 @@ async function findEventosByOrganizador(req: Request, res: Response) {
 
 async function login(req: Request, res: Response) {
   const { mail, password } = req.body;
-  console.log('Datos recibidos:', { mail, password }); // Asegúrate de que los datos están llegando correctamente
 
   try {
     const organizador = await em.findOne(Organizador, { mail });
@@ -86,32 +91,24 @@ async function login(req: Request, res: Response) {
       return res.status(404).json({ message: 'Organizador no encontrado' });
     }
 
-    const hashedPassword = await bcrypt.hash(organizador.password, 10);
-    const isPasswordValid = await bcrypt.compare(password, hashedPassword);
+    const isPasswordValid = await bcrypt.compare(password, organizador.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Contraseña incorrecta' });
     }
 
-    console.log('Contraseña válida');
-
-    // Generar el token JWT
-    const token = jwt.sign({ userId: organizador.id }, 'secreto', {
-      expiresIn: '1h',
-    });
-
-    return res.status(200).json({
+    res.status(200).json({
       message: 'Login exitoso',
       organizador: {
+        id: organizador.id,
         CUIT: organizador.CUIT,
         nickname: organizador.nickname,
         mail: organizador.mail,
-        id: organizador.id, // Asegúrate de incluir el id aquí
-        description: organizador.description,
-      },
-      token: token, // Aquí debes enviar el token generado
+        description: organizador.description
+      }
     });
   } catch (error) {
-    return res.status(500).json({ message: (error as Error).message });
+    console.error('Error en login:', error);
+    res.status(500).json({ message: 'Error al iniciar sesión' });
   }
 }
 
@@ -141,11 +138,14 @@ async function register(req: Request, res: Response) {
         .json({ message: 'El nickname ya está registrado' });
     }
 
+    // Hashear la contraseña
+    const hashedPassword = await hashPassword(password);
+
     // Si todo está bien, crear el nuevo organizador
     const newOrganizador = em.create(Organizador, {
       nickname,
       mail,
-      password,
+      password: hashedPassword,
       CUIT,
       description,
       createdAt: new Date(),
@@ -157,7 +157,10 @@ async function register(req: Request, res: Response) {
 
     res.status(201).json({
       message: 'Organizador registrado exitosamente',
-      data: newOrganizador,
+      data: {
+        ...newOrganizador,
+        password: undefined // No devolver la contraseña hasheada
+      }
     });
   } catch (error) {
     console.error(error);
@@ -208,11 +211,30 @@ async function update(req: Request, res: Response) {
   try {
     const id = Number.parseInt(req.params.id);
     const organizadorToUpdate = await em.findOneOrFail(Organizador, { id });
+
+    // Si se está actualizando la contraseña, hashearla
+    if (req.body.sanitizedInput.password) {
+      req.body.sanitizedInput.password = await hashPassword(req.body.sanitizedInput.password);
+    }
+
     em.assign(organizadorToUpdate, req.body.sanitizedInput);
     await em.flush();
-    res
-      .status(200)
-      .json({ message: 'evento updated', data: organizadorToUpdate });
+
+    // Crear un objeto de respuesta sin la contraseña
+    const responseData = {
+      id: organizadorToUpdate.id,
+      CUIT: organizadorToUpdate.CUIT,
+      nickname: organizadorToUpdate.nickname,
+      mail: organizadorToUpdate.mail,
+      description: organizadorToUpdate.description,
+      createdAt: organizadorToUpdate.createdAt,
+      updatedAt: organizadorToUpdate.updatedAt
+    };
+
+    res.status(200).json({
+      message: 'Organizador updated',
+      data: responseData
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
